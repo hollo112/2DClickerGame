@@ -197,7 +197,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 946d261a39eed904d8b06b57488ec10b, type: 3}
+  m_Resource: {fileID: 8300000, guid: b25e99d615bac424386af8197a4c3224, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -299,3 +299,4 @@ MonoBehaviour:
   _requiredToolLevel: 6
   _baseReward: 40
   _maxHp: 30
+  _destroyEffectPrefab: {fileID: 2213390171910699386, guid: 99c50f24d134da940a0f2376949c532a, type: 3}

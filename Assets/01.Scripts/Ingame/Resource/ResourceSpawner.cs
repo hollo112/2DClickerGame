@@ -46,6 +46,8 @@ public class ResourceSpawner : MonoBehaviour
         int minLevel = Mathf.Clamp(toolLevel - 1, 0, maxIndex);
         int maxLevel = Mathf.Clamp(toolLevel + 1, 0, maxIndex);
 
+        int removeCount = 0;
+
         for (int i = _activeResources.Count - 1; i >= 0; i--)
         {
             var obj = _activeResources[i];
@@ -56,10 +58,16 @@ public class ResourceSpawner : MonoBehaviour
                     _occupiedPositions.RemoveAt(i);
                     _activeResources.RemoveAt(i);
                     RemoveLevelCount(res.RequiredToolLevel);
-                    Destroy(obj);
-                    StartCoroutine(RespawnAfterDelay());
+                    res.ForceDestroy();
+                    removeCount++;
                 }
             }
+        }
+
+        // 제거된 만큼 즉시 스폰
+        for (int i = 0; i < removeCount; i++)
+        {
+            SpawnResource();
         }
     }
 

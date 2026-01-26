@@ -10,6 +10,9 @@ public class Resource : MonoBehaviour, IClickable
     [Header("HP Settings")]
     [SerializeField] private int _maxHp = 5;
 
+    [Header("Effects")]
+    [SerializeField] private GameObject _destroyEffectPrefab;
+
     private int _currentHp;
     private ResourceSpawner _spawner;
     private Vector2 _spawnedPosition;
@@ -66,19 +69,30 @@ public class Resource : MonoBehaviour, IClickable
 
         if (_currentHp <= 0)
         {
-            Die();
+            Despawn(notifySpawner: true);
         }
     }
 
-    private void Die()
+    // 외부에서 강제 파괴 시 호출 (업그레이드로 인한 제거 등)
+    public void ForceDestroy()
     {
-        Debug.Log($"[{_name}] 파괴됨!");
+        Despawn(notifySpawner: false);
+    }
 
-        // 스포너에 알림
-        _spawner?.OnResourceDestroyed(gameObject, _spawnedPosition, _spawnedLevel);
+    private void Despawn(bool notifySpawner)
+    {
+        SpawnDestroyEffect();
 
-        // TODO: 파괴 이펙트/사운드
+        if (notifySpawner)
+            _spawner?.OnResourceDestroyed(gameObject, _spawnedPosition, _spawnedLevel);
 
         Destroy(gameObject);
+    }
+
+    private void SpawnDestroyEffect()
+    {
+        if (_destroyEffectPrefab == null) return;
+
+        Instantiate(_destroyEffectPrefab, transform.position, Quaternion.identity);
     }
 }
