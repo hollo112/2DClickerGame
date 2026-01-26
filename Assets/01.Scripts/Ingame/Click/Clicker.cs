@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Clicker : MonoBehaviour
 {
-    [SerializeField] private float _autoClickInterval = 1f;
-    [SerializeField] private int _baseDamage = 1;       // 기본 클릭 데미지
-    [SerializeField] private int _toolLevel = 0;        // 현재 도구 레벨
+    private float _autoClickInterval = 1f;
+    private int _damage = 1;
+    private int _toolLevel = 0;
 
     private IClickable _currentTarget;
     private Vector2 _currentWorldPos;
@@ -16,7 +16,7 @@ public class Clicker : MonoBehaviour
     // 외부에서 업그레이드 시 호출
     public void SetAutoClickEnabled(bool value) => _isAutoClickEnabled = value;
     public void SetAutoClickInterval(float interval) => _autoClickInterval = interval;
-    public void SetBaseDamage(int damage) => _baseDamage = damage;
+    public void SetDamage(int damage) => _damage = damage;
     public void SetToolLevel(int level) => _toolLevel = level;
 
     private void Awake()
@@ -77,7 +77,7 @@ public class Clicker : MonoBehaviour
     {
         return new ClickInfo(
             worldPosition: worldPos,
-            damage: _baseDamage,
+            damage: _damage,
             toolLevel: _toolLevel,
             isAutoClick: isAutoClick
         );

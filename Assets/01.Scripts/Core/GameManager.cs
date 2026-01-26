@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private Clicker _clicker;
 
+    [Header("Settings")]
+    [SerializeField] private int _baseClickDamage = 1;  // 기본 클릭 데미지
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -31,7 +34,7 @@ public class GameManager : MonoBehaviour
         var upgrade = UpgradeManager.Instance;
 
         _clicker.SetToolLevel(upgrade.ToolLevel);
-        _clicker.SetBaseDamage(upgrade.BonusDamage);
+        _clicker.SetDamage(_baseClickDamage + upgrade.BonusDamage);
         _clicker.SetAutoClickEnabled(upgrade.IsAutoClickUnlocked);
         _clicker.SetAutoClickInterval(upgrade.AutoClickInterval);
     }

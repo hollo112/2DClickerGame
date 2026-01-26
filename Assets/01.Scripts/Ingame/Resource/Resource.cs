@@ -13,15 +13,17 @@ public class Resource : MonoBehaviour, IClickable
     private int _currentHp;
     private ResourceSpawner _spawner;
     private Vector2 _spawnedPosition;
+    private int _spawnedLevel;
 
     public int RequiredToolLevel => _requiredToolLevel;
     public int CurrentHp => _currentHp;
     public int MaxHp => _maxHp;
 
-    public void Initialize(ResourceSpawner spawner)
+    public void Initialize(ResourceSpawner spawner, int spawnedLevel)
     {
         _spawner = spawner;
         _spawnedPosition = transform.position;
+        _spawnedLevel = spawnedLevel;
         _currentHp = _maxHp;
     }
 
@@ -42,7 +44,7 @@ public class Resource : MonoBehaviour, IClickable
         // 데미지 적용
         TakeDamage(clickInfo.Damage);
 
-        // 보상 지급 (HP와 관계없이 클릭마다)
+        // 보상 지급
         int reward = _baseReward + clickInfo.Damage;
         CurrencyManager.Instance.AddMoney(reward);
 
@@ -73,7 +75,7 @@ public class Resource : MonoBehaviour, IClickable
         Debug.Log($"[{_name}] 파괴됨!");
 
         // 스포너에 알림
-        _spawner?.OnResourceDestroyed(gameObject, _spawnedPosition);
+        _spawner?.OnResourceDestroyed(gameObject, _spawnedPosition, _spawnedLevel);
 
         // TODO: 파괴 이펙트/사운드
 

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: UpgradeData
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   MaxToolLevel: 10
-  ToolUpgradeCosts: 
+  ToolUpgradeCosts: 0a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
   MaxDamageLevel: 20
-  DamageUpgradeCosts: 
+  DamageUpgradeCosts: 0a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
   DamagePerLevel: 1
   AutoClickUnlockCost: 100
   MaxAutoClickLevel: 10
-  AutoClickSpeedCosts: 
+  AutoClickSpeedCosts: 0a0000000a000000000000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
   BaseAutoClickInterval: 1
   IntervalReductionPerLevel: 0.08
   MinAutoClickInterval: 0.2

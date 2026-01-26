@@ -8,10 +8,29 @@ public class ScaleTweeningFeedback : MonoBehaviour, IFeedback
     [SerializeField] private int _vibrato = 6;
     [SerializeField] private float _elasticity = 0.5f;
 
+    private Vector3 _originalScale;
+
+    private void Awake()
+    {
+        _originalScale = transform.localScale;
+    }
+
+    public void SetOriginalScale(Vector3 scale)
+    {
+        _originalScale = scale;
+    }
+
     public void Play(ClickInfo clickInfo)
     {
         transform.DOKill();
-        transform.localScale = Vector3.one;
-        transform.DOPunchScale(Vector3.one * _punchScale, _duration, _vibrato, _elasticity);
+        transform.localScale = _originalScale;
+
+        // x 방향에 맞춰 punch 적용
+        Vector3 punch = new Vector3(
+            _punchScale * Mathf.Sign(_originalScale.x),
+            _punchScale,
+            _punchScale
+        );
+        transform.DOPunchScale(punch, _duration, _vibrato, _elasticity);
     }
 }
