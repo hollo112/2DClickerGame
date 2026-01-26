@@ -15,7 +15,10 @@ GameObject:
   - component: {fileID: 8628130533789400029}
   - component: {fileID: 8578391975363373992}
   - component: {fileID: 4467752890657691803}
+  - component: {fileID: 2518703254448655273}
   - component: {fileID: -5277707189804658251}
+  - component: {fileID: -1611102620598543913}
+  - component: {fileID: 8655693799628257031}
   m_Layer: 6
   m_Name: Resource_04
   m_TagString: Untagged
@@ -131,10 +134,10 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.4874094, y: 0.18703431}
     oldSize: {x: 1.0545454, y: 1.3363637}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -283,6 +286,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2518703254448655273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7463591535100380810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb209096e0fb48d45b776f198ae97e70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IdleAnimation
+  _squashRatio: 0.1
+  _duration: 1.2
+  _ease: 4
 --- !u!114 &-5277707189804658251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,3 +318,39 @@ MonoBehaviour:
   _baseReward: 30
   _maxHp: 25
   _destroyEffectPrefab: {fileID: 2213390171910699386, guid: 99c50f24d134da940a0f2376949c532a, type: 3}
+  _spawnOffsetY: -0.5
+  _spawnDuration: 0.3
+--- !u!114 &-1611102620598543913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7463591535100380810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a374193f6a7060f4197113b434a7909e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFloaterFeedback
+  _floaterPrefab: {fileID: 7618851102892349357, guid: fa82c4778ad04574aae95e3d57eb386c, type: 3}
+  _spawnOffsetY: 1.5
+  _moveDistance: 1
+  _duration: 0.8
+  _randomAngle: 30
+--- !u!114 &8655693799628257031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7463591535100380810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee538c3814a040448dd466c5f9b7443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WarningFloaterFeedback
+  _floaterPrefab: {fileID: 3016495784649072839, guid: 2e06e9ceca89569459e0a293a1421a9a, type: 3}
+  _spawnOffsetY: 1
+  _moveDistance: 0.8
+  _duration: 0.6
+  _warningMessage: "\uCD1D\uC744 \uAC15\uD654\uD558\uC138\uC694!"

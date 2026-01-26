@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class Resource : MonoBehaviour, IClickable
 {
@@ -12,6 +13,12 @@ public class Resource : MonoBehaviour, IClickable
 
     [Header("Effects")]
     [SerializeField] private GameObject _destroyEffectPrefab;
+
+    private WarningFloaterFeedback _warningFeedback;
+
+    [Header("Spawn Animation")]
+    [SerializeField] private float _spawnOffsetY = -0.5f;
+    [SerializeField] private float _spawnDuration = 0.3f;
 
     private int _currentHp;
     private ResourceSpawner _spawner;
@@ -28,19 +35,43 @@ public class Resource : MonoBehaviour, IClickable
         _spawnedPosition = transform.position;
         _spawnedLevel = spawnedLevel;
         _currentHp = _maxHp;
+
+        PlaySpawnAnimation();
+    }
+
+    private void PlaySpawnAnimation()
+    {
+        Vector3 targetPos = transform.position;
+        Vector3 targetScale = transform.localScale;
+
+        transform.position = targetPos + Vector3.up * _spawnOffsetY;
+        transform.localScale = Vector3.zero;
+
+        transform.DOMove(targetPos, _spawnDuration).SetEase(Ease.OutBack);
+        transform.DOScale(targetScale, _spawnDuration).SetEase(Ease.OutBack)
+            .OnComplete(() => StartIdleAnimation(targetScale));
+    }
+
+    private void StartIdleAnimation(Vector3 scale)
+    {
+        if (TryGetComponent(out IdleAnimation idle))
+        {
+            idle.Initialize(scale);
+        }
     }
 
     private void Awake()
     {
         _currentHp = _maxHp;
         _spawnedPosition = transform.position;
+        _warningFeedback = GetComponentInChildren<WarningFloaterFeedback>();
     }
 
     public bool OnClick(ClickInfo clickInfo)
     {
         if (clickInfo.ToolLevel < _requiredToolLevel)
         {
-            Debug.Log($"도구 레벨 부족! 필요: {_requiredToolLevel}, 현재: {clickInfo.ToolLevel}");
+            _warningFeedback?.Play();
             return false;
         }
 
@@ -51,7 +82,8 @@ public class Resource : MonoBehaviour, IClickable
         int reward = _baseReward + clickInfo.Damage;
         CurrencyManager.Instance.AddMoney(reward);
 
-        // 피드백 재생
+        // 피드백 재생 (Reward 설정)
+        clickInfo.Reward = reward;
         var feedbacks = GetComponentsInChildren<IFeedback>();
         foreach (var feedback in feedbacks)
         {
@@ -81,6 +113,7 @@ public class Resource : MonoBehaviour, IClickable
 
     private void Despawn(bool notifySpawner)
     {
+        transform.DOKill();
         SpawnDestroyEffect();
 
         if (notifySpawner)

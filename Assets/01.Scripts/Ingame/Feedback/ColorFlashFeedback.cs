@@ -33,4 +33,9 @@ public class ColorFlashFeedback : MonoBehaviour, IFeedback
     {
         _tween?.Kill();
     }
+
+    private void OnDestroy()
+    {
+        _tween?.Kill();
+    }
 }

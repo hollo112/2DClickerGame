@@ -3089,7 +3089,7 @@ MonoBehaviour:
   _maxResourceCount: 15
   _minSpacing: 1.5
   _respawnDelay: 3
-  _areaCenter: {x: 3, y: 0}
+  _areaCenter: {x: 3, y: -0.5}
   _areaSize: {x: 14, y: 8}
   _showGizmos: 1
 --- !u!4 &1066459637
