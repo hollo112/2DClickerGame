@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2e4ce129c70ee24ea86e5239afd8d1e, type: 3}
+  m_Name: UpgradeData
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  MaxToolLevel: 10
+  ToolUpgradeCosts: 
+  MaxDamageLevel: 20
+  DamageUpgradeCosts: 
+  DamagePerLevel: 1
+  AutoClickUnlockCost: 100
+  MaxAutoClickLevel: 10
+  AutoClickSpeedCosts: 
+  BaseAutoClickInterval: 1
+  IntervalReductionPerLevel: 0.08
+  MinAutoClickInterval: 0.2
