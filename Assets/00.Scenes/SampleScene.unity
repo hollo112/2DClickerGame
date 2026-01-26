@@ -399,6 +399,8 @@ GameObject:
   - component: {fileID: 981095270}
   - component: {fileID: 981095272}
   - component: {fileID: 981095273}
+  - component: {fileID: 981095274}
+  - component: {fileID: 981095275}
   m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
@@ -541,6 +543,36 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &981095274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981095269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a13a42536f14e834db9a0d3621079581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScaleTweeningFeedback
+  _punchScale: 0.3
+  _duration: 0.3
+  _vibrato: 6
+  _elasticity: 0.5
+--- !u!114 &981095275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981095269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ed92c3b012ee14f8df8fd3987b47b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColorFlashFeedback
+  _flashColor: {r: 0.6320754, g: 0, b: 0, a: 1}
+  _duration: 0.1
 --- !u!1 &1677622997
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,14 +3,22 @@ using UnityEngine;
 public class ClickTarget : MonoBehaviour, IClickable
 {
     [SerializeField] private string _name;
-    [SerializeField] private int _requiredToolLevel = 0;  // 필요 도구 레벨
-    [SerializeField] private int _baseReward = 10;        // 기본 보상
+    [SerializeField] private int _requiredToolLevel = 0;
+    [SerializeField] private int _baseReward = 10;
+
+    private ScaleTweeningFeedback _scaleFeedback;
+    private ColorFlashFeedback _flashFeedback;
 
     public int RequiredToolLevel => _requiredToolLevel;
 
+    private void Awake()
+    {
+        _scaleFeedback = GetComponent<ScaleTweeningFeedback>();
+        _flashFeedback = GetComponent<ColorFlashFeedback>();
+    }
+
     public bool OnClick(ClickInfo clickInfo)
     {
-        // 도구 레벨 부족 시 채집 불가
         if (clickInfo.ToolLevel < _requiredToolLevel)
         {
             Debug.Log($"도구 레벨 부족! 필요: {_requiredToolLevel}, 현재: {clickInfo.ToolLevel}");
@@ -20,7 +28,11 @@ public class ClickTarget : MonoBehaviour, IClickable
         int reward = _baseReward + clickInfo.Damage;
         CurrencyManager.Instance.AddMoney(reward);
 
-        // TODO: 이펙트, 사운드 추가
+        var feedbacks = GetComponentsInChildren<IFeedback>();
+        foreach (var feedback in feedbacks)
+        {
+            feedback.Play(clickInfo);
+        }
 
         return true;
     }

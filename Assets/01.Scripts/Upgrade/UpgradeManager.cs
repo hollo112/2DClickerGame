@@ -35,9 +35,7 @@ public class UpgradeManager : MonoBehaviour
         Instance = this;
     }
 
-    /// <summary>
-    /// 업그레이드 시도. 성공 시 true 반환
-    /// </summary>
+    // 업그레이드 시도. 성공 시 true 반환
     public bool TryUpgrade(UpgradeType type)
     {
         int cost = GetUpgradeCost(type);
@@ -56,9 +54,7 @@ public class UpgradeManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// 업그레이드 비용 조회. 최대 레벨이면 -1 반환
-    /// </summary>
+    // 업그레이드 비용 조회. 최대 레벨이면 -1 반환
     public int GetUpgradeCost(UpgradeType type)
     {
         switch (type)
@@ -85,9 +81,7 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 현재 레벨 조회
-    /// </summary>
+    // 현재 레벨 조회
     public int GetCurrentLevel(UpgradeType type)
     {
         return type switch
@@ -100,9 +94,7 @@ public class UpgradeManager : MonoBehaviour
         };
     }
 
-    /// <summary>
-    /// 최대 레벨 여부
-    /// </summary>
+    // 최대 레벨 여부
     public bool IsMaxLevel(UpgradeType type)
     {
         return type switch

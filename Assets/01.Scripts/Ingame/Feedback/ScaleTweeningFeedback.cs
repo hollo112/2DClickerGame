@@ -1,14 +1,17 @@
 using UnityEngine;
+using DG.Tweening;
 
-public class ScaleTweeningFeedback : MonoBehaviour
+public class ScaleTweeningFeedback : MonoBehaviour, IFeedback
 {
-    [SerializeField] private ClickTarget _owner;
+    [SerializeField] private float _punchScale = 0.3f;
+    [SerializeField] private float _duration = 0.3f;
+    [SerializeField] private int _vibrato = 6;
+    [SerializeField] private float _elasticity = 0.5f;
 
-    public void Play()
+    public void Play(ClickInfo clickInfo)
     {
-        // _owner.transform.localScale.DoScale(1.2f, 1f).OnComplete(() =>
-        // {
-        //     _owner.transform.localScale = Vector3.one;
-        // });
+        transform.DOKill();
+        transform.localScale = Vector3.one;
+        transform.DOPunchScale(Vector3.one * _punchScale, _duration, _vibrato, _elasticity);
     }
 }
