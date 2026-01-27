@@ -18,7 +18,7 @@ public class MonsterData : ScriptableObject
 
     [Header("Cost Settings")]
     public double SpawnCost = 50;               // 소환 비용
-    public double MergeCost = 100;              // 머지 비용
+    public double[] MergeCosts;                 // 티어별 머지 비용 (0티어→1티어, 1티어→2티어, ...)
 
     [Header("Limit Settings")]
     public int MaxMonstersPerTier = 10;         // 단계별 최대 몬스터 수

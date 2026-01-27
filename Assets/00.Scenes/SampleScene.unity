@@ -4631,7 +4631,7 @@ MonoBehaviour:
   - {fileID: 7463591535100380810, guid: 8c10d3f3a52b2ff49bd59e9401e3acc3, type: 3}
   _maxResourceCount: 15
   _minSpacing: 1.5
-  _respawnDelay: 3
+  _respawnDelay: 1
   _areaCenter: {x: 3, y: -0.5}
   _areaSize: {x: 14, y: 8}
 --- !u!4 &1066459637

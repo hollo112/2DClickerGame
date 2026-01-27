@@ -15,8 +15,25 @@ public class UpgradeManager : MonoBehaviour
 
     // 프로퍼티
     public int ToolLevel => _toolLevel;
-    public double BonusDamage => _damageLevel * _data.DamagePerLevel;
+    public double BonusDamage => CalculateBonusDamage(_damageLevel);
     public bool IsAutoClickUnlocked => _isAutoClickUnlocked;
+
+    private double CalculateBonusDamage(int level)
+    {
+        if (_data.DamagePerLevels == null || level <= 0) return 0;
+        double total = 0;
+        int maxIndex = Mathf.Min(level, _data.DamagePerLevels.Length);
+        for (int i = 0; i < maxIndex; i++)
+            total += _data.DamagePerLevels[i];
+        return total;
+    }
+
+    public double GetNextBonusDamage()
+    {
+        if (_data.DamagePerLevels == null || _damageLevel >= _data.DamagePerLevels.Length)
+            return 0;
+        return _data.DamagePerLevels[_damageLevel];
+    }
     public float AutoClickInterval => Mathf.Max(
         _data.BaseAutoClickInterval - (_autoClickSpeedLevel * _data.IntervalReductionPerLevel),
         _data.MinAutoClickInterval

@@ -10,7 +10,7 @@ public class UpgradeData : ScriptableObject
     [Header("Damage Upgrade (돈 업그레이드)")]
     public int MaxDamageLevel = 20;
     public double[] DamageUpgradeCosts;
-    public double DamagePerLevel = 1;  // 레벨당 추가 데미지
+    public double[] DamagePerLevels;  // 레벨별 추가 데미지 (누적)
 
     [Header("Auto Click Unlock (오토클릭 해금)")]
     public double AutoClickUnlockCost = 100;

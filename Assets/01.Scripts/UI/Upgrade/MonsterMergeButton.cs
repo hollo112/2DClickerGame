@@ -47,10 +47,12 @@ public class MonsterMergeButton : UpgradeButtonBase
     protected override void UpdateDisplay()
     {
         double cost = GetCurrentCost();
+        int tier = MonsterManager.Instance != null ? MonsterManager.Instance.GetMergeableTier() : -1;
+        string tierText = tier >= 0 ? $"\n      {tier + 1}에서 {tier + 2}단계" : "";
 
         SetDisplay(
             "몬스터 머지",
-            "같은 단계 3마리 합성",
+            $"같은 단계 3마리 합성{tierText}",
             "",
             cost >= 0 ? $"{cost.ToFormattedString()} G" : "-"
         );
@@ -60,7 +62,11 @@ public class MonsterMergeButton : UpgradeButtonBase
     {
         if (MonsterManager.Instance == null || MonsterManager.Instance.Data == null)
             return -1;
-        return MonsterManager.Instance.Data.MergeCost;
+
+        int tier = MonsterManager.Instance.GetMergeableTier();
+        if (tier < 0) return -1;
+
+        return MonsterManager.Instance.GetMergeCost(tier);
     }
 
     protected override void UpdateInteractable()

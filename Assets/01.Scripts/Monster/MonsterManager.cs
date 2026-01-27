@@ -37,17 +37,35 @@ public class MonsterManager : MonoBehaviour
         return CreateMonster(0, spawnPos.Value);
     }
 
-    public bool CanMerge() => _data != null && CurrencyManager.Instance.CanAfford(_data.MergeCost) && FindMergeableTier() >= 0;
+    public bool CanMerge()
+    {
+        if (_data == null) return false;
+        int tier = FindMergeableTier();
+        if (tier < 0) return false;
+        return CurrencyManager.Instance.CanAfford(GetMergeCost(tier));
+    }
+
+    public double GetMergeCost(int tier)
+    {
+        if (_data.MergeCosts == null || tier < 0 || tier >= _data.MergeCosts.Length)
+            return double.MaxValue;
+        return _data.MergeCosts[tier];
+    }
+
+    public int GetMergeableTier() => FindMergeableTier();
 
     public bool TryMerge()
     {
         int targetTier = FindMergeableTier();
-        if (targetTier < 0 || !CurrencyManager.Instance.CanAfford(_data.MergeCost)) return false;
+        if (targetTier < 0) return false;
+
+        double cost = GetMergeCost(targetTier);
+        if (!CurrencyManager.Instance.CanAfford(cost)) return false;
 
         var targets = _monsters.Where(m => m != null && m.Tier == targetTier).Take(MonstersRequiredForMerge).ToList();
         if (targets.Count < MonstersRequiredForMerge) return false;
 
-        CurrencyManager.Instance.SpendMoney(_data.MergeCost);
+        CurrencyManager.Instance.SpendMoney(cost);
         Vector2 mergePos = Vector2.zero;
         foreach (var m in targets) mergePos += (Vector2)m.transform.position;
         mergePos /= targets.Count;
