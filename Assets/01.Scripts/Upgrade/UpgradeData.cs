@@ -5,20 +5,31 @@ public class UpgradeData : ScriptableObject
 {
     [Header("Tool Upgrade (도구)")]
     public int MaxToolLevel = 10;
-    public int[] ToolUpgradeCosts;  // 레벨별 비용
+    public double[] ToolUpgradeCosts;  // 레벨별 비용
 
     [Header("Damage Upgrade (돈 업그레이드)")]
     public int MaxDamageLevel = 20;
-    public int[] DamageUpgradeCosts;
-    public int DamagePerLevel = 1;  // 레벨당 추가 데미지
+    public double[] DamageUpgradeCosts;
+    public double DamagePerLevel = 1;  // 레벨당 추가 데미지
 
     [Header("Auto Click Unlock (오토클릭 해금)")]
-    public int AutoClickUnlockCost = 100;
+    public double AutoClickUnlockCost = 100;
 
     [Header("Auto Click Speed (오토클릭 속도)")]
     public int MaxAutoClickLevel = 10;
-    public int[] AutoClickSpeedCosts;
+    public double[] AutoClickSpeedCosts;
     public float BaseAutoClickInterval = 1f;
     public float IntervalReductionPerLevel = 0.08f;  // 레벨당 감소량
     public float MinAutoClickInterval = 0.2f;        // 최소 간격
+
+    [Header("Building Unlock (건축물 해금)")]
+    public double BuildingUnlockCost = 500;
+    public double BaseBuildingIncome = 5;  // 기본 수입
+
+    [Header("Building Income (건축물 수입 속도)")]
+    public int MaxBuildingLevel = 10;
+    public double[] BuildingUpgradeCosts;
+    public float BaseBuildingInterval = 5f;         // 기본 수입 간격 (초)
+    public float IntervalReductionPerBuildingLevel = 0.3f;  // 레벨당 감소량
+    public float MinBuildingInterval = 1f;          // 최소 간격
 }

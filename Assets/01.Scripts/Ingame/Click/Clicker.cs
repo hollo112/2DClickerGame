@@ -3,7 +3,7 @@ using UnityEngine;
 public class Clicker : MonoBehaviour
 {
     private float _autoClickInterval = 1f;
-    private int _damage = 1;
+    private double _damage = 1;
     private int _toolLevel = 0;
 
     private IClickable _currentTarget;
@@ -16,7 +16,7 @@ public class Clicker : MonoBehaviour
     // 외부에서 업그레이드 시 호출
     public void SetAutoClickEnabled(bool value) => _isAutoClickEnabled = value;
     public void SetAutoClickInterval(float interval) => _autoClickInterval = interval;
-    public void SetDamage(int damage) => _damage = damage;
+    public void SetDamage(double damage) => _damage = damage;
     public void SetToolLevel(int level) => _toolLevel = level;
 
     private void Awake()

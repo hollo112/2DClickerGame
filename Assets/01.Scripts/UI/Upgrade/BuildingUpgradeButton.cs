@@ -1,10 +1,10 @@
-public class AutoClickUpgradeButton : UpgradeButtonBase
+public class BuildingUpgradeButton : UpgradeButtonBase
 {
-    private bool IsUnlocked => UpgradeManager.Instance.IsAutoClickUnlocked;
+    private bool IsUnlocked => UpgradeManager.Instance.IsBuildingUnlocked;
 
     protected override bool TryUpgrade()
     {
-        var type = IsUnlocked ? UpgradeType.AutoClickSpeed : UpgradeType.AutoClickUnlock;
+        var type = IsUnlocked ? UpgradeType.BuildingIncome : UpgradeType.BuildingUnlock;
         return UpgradeManager.Instance.TryUpgrade(type);
     }
 
@@ -15,21 +15,21 @@ public class AutoClickUpgradeButton : UpgradeButtonBase
         if (!IsUnlocked)
         {
             SetDisplay(
-                "오토클릭",
-                "클릭 유지 시 자동 채굴",
+                "건축물",
+                "시간당 자동 수입 생성",
                 "미해금",
                 $"{GetCurrentCost():N0} G"
             );
             return;
         }
 
-        int level = upgrade.GetCurrentLevel(UpgradeType.AutoClickSpeed);
+        int level = upgrade.GetCurrentLevel(UpgradeType.BuildingIncome);
         double cost = GetCurrentCost();
-        bool isMax = upgrade.IsMaxLevel(UpgradeType.AutoClickSpeed);
+        bool isMax = upgrade.IsMaxLevel(UpgradeType.BuildingIncome);
 
         SetDisplay(
-            "오토클릭",
-            "자동 채굴 속도 증가",
+            "건축물",
+            "수입 속도 증가",
             $"Lv.{level}",
             isMax ? "MAX" : $"{cost:N0} G"
         );
@@ -37,7 +37,7 @@ public class AutoClickUpgradeButton : UpgradeButtonBase
 
     protected override double GetCurrentCost()
     {
-        var type = IsUnlocked ? UpgradeType.AutoClickSpeed : UpgradeType.AutoClickUnlock;
+        var type = IsUnlocked ? UpgradeType.BuildingIncome : UpgradeType.BuildingUnlock;
         return UpgradeManager.Instance.GetUpgradeCost(type);
     }
 }

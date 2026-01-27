@@ -9,7 +9,7 @@ public class ToolUpgradeButton : UpgradeButtonBase
     {
         var upgrade = UpgradeManager.Instance;
         int level = upgrade.GetCurrentLevel(UpgradeType.Tool);
-        int cost = GetCurrentCost();
+        double cost = GetCurrentCost();
         bool isMax = upgrade.IsMaxLevel(UpgradeType.Tool);
 
         SetDisplay(
@@ -20,7 +20,7 @@ public class ToolUpgradeButton : UpgradeButtonBase
         );
     }
 
-    protected override int GetCurrentCost()
+    protected override double GetCurrentCost()
     {
         return UpgradeManager.Instance.GetUpgradeCost(UpgradeType.Tool);
     }

@@ -17,7 +17,7 @@ public class UI_Currency : MonoBehaviour
             CurrencyManager.Instance.OnMoneyChanged -= UpdateMoneyText;
     }
 
-    private void UpdateMoneyText(int money)
+    private void UpdateMoneyText(double money)
     {
         _moneyText.text = $"{money:N0} G";
     }

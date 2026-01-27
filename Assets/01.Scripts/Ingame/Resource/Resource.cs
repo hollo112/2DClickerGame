@@ -6,7 +6,7 @@ public class Resource : MonoBehaviour, IClickable
     [Header("Resource Settings")]
     [SerializeField] private string _name;
     [SerializeField] private int _requiredToolLevel = 0;
-    [SerializeField] private int _baseReward = 10;
+    [SerializeField] private double _baseReward = 10;
 
     [Header("HP Settings")]
     [SerializeField] private int _maxHp = 5;
@@ -79,7 +79,7 @@ public class Resource : MonoBehaviour, IClickable
         TakeDamage(clickInfo.Damage);
 
         // 보상 지급
-        int reward = _baseReward + clickInfo.Damage;
+        double reward = _baseReward + clickInfo.Damage;
         CurrencyManager.Instance.AddMoney(reward);
 
         // 피드백 재생 (Reward 설정)
@@ -93,9 +93,9 @@ public class Resource : MonoBehaviour, IClickable
         return true;
     }
 
-    private void TakeDamage(int damage)
+    private void TakeDamage(double damage)
     {
-        _currentHp -= damage;
+        _currentHp -= (int)damage;
 
         Debug.Log($"[{_name}] HP: {_currentHp}/{_maxHp}");
 

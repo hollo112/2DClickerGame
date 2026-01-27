@@ -5,14 +5,14 @@ public class CurrencyManager : MonoBehaviour
 {
     public static CurrencyManager Instance { get; private set; }
 
-    [SerializeField] private int _startingMoney = 0;
+    [SerializeField] private double _startingMoney = 0;
 
-    private int _currentMoney;
+    private double _currentMoney;
 
-    public int CurrentMoney => _currentMoney;
+    public double CurrentMoney => _currentMoney;
 
     // 재화 변경 시 이벤트
-    public event Action<int> OnMoneyChanged;
+    public event Action<double> OnMoneyChanged;
 
     private void Awake()
     {
@@ -26,7 +26,7 @@ public class CurrencyManager : MonoBehaviour
         _currentMoney = _startingMoney;
     }
 
-    public void AddMoney(int amount)
+    public void AddMoney(double amount)
     {
         if (amount <= 0) return;
 
@@ -36,7 +36,7 @@ public class CurrencyManager : MonoBehaviour
         Debug.Log($"[Currency] +{amount} | 현재: {_currentMoney}");
     }
 
-    public bool SpendMoney(int amount)
+    public bool SpendMoney(double amount)
     {
         if (amount <= 0 || _currentMoney < amount)
             return false;
@@ -48,5 +48,5 @@ public class CurrencyManager : MonoBehaviour
         return true;
     }
 
-    public bool CanAfford(int amount) => _currentMoney >= amount;
+    public bool CanAfford(double amount) => _currentMoney >= amount;
 }

@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Clicker _clicker;
 
     [Header("Settings")]
-    [SerializeField] private int _baseClickDamage = 1;  // 기본 클릭 데미지
+    [SerializeField] private double _baseClickDamage = 1;  // 기본 클릭 데미지
 
     private void Awake()
     {

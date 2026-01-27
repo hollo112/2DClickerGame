@@ -41,11 +41,11 @@ public abstract class UpgradeButtonBase : MonoBehaviour
 
     protected abstract bool TryUpgrade();
     protected abstract void UpdateDisplay();
-    protected abstract int GetCurrentCost();
+    protected abstract double GetCurrentCost();
 
     protected virtual void UpdateInteractable()
     {
-        int cost = GetCurrentCost();
+        double cost = GetCurrentCost();
         _button.interactable = cost >= 0 && CurrencyManager.Instance.CanAfford(cost);
     }
 

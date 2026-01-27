@@ -20,6 +20,12 @@ public class ResourceSpawner : MonoBehaviour
     private List<Vector2> _occupiedPositions = new List<Vector2>();
     private Dictionary<int, int> _levelCounts = new Dictionary<int, int>();  // 레벨별 개수
 
+    // 외부에서 스폰 영역 및 점유 위치 조회용
+    public Vector2 AreaCenter => _areaCenter;
+    public Vector2 AreaSize => _areaSize;
+    public float MinSpacing => _minSpacing;
+    public IReadOnlyList<Vector2> OccupiedPositions => _occupiedPositions;
+
     private void Start()
     {
         UpgradeManager.Instance.OnUpgraded += OnUpgraded;
@@ -193,6 +199,7 @@ public class ResourceSpawner : MonoBehaviour
 
     private bool IsValidPosition(Vector2 position)
     {
+        // 다른 Resource와의 거리 검사
         foreach (Vector2 occupied in _occupiedPositions)
         {
             if (Vector2.Distance(position, occupied) < _minSpacing)
@@ -200,6 +207,19 @@ public class ResourceSpawner : MonoBehaviour
                 return false;
             }
         }
+
+        // Building과의 거리 검사
+        if (BuildingSpawner.Instance != null)
+        {
+            foreach (Vector2 buildingPos in BuildingSpawner.Instance.OccupiedPositions)
+            {
+                if (Vector2.Distance(position, buildingPos) < _minSpacing)
+                {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 

@@ -4,9 +4,6 @@ using DG.Tweening;
 
 public class DamageFloaterFeedback : MonoBehaviour, IFeedback
 {
-    [Header("Prefab")]
-    [SerializeField] private GameObject _floaterPrefab;
-
     [Header("Animation Settings")]
     [SerializeField] private float _spawnOffsetY = 0.5f;
     [SerializeField] private float _moveDistance = 1f;
@@ -15,19 +12,26 @@ public class DamageFloaterFeedback : MonoBehaviour, IFeedback
 
     public void Play(ClickInfo clickInfo)
     {
-        if (_floaterPrefab == null) return;
+        if (DamageFloaterSpawner.Instance == null) return;
 
         Vector3 spawnPos = transform.position + Vector3.up * _spawnOffsetY;
-        GameObject floater = Instantiate(_floaterPrefab, spawnPos, Quaternion.identity);
+        GameObject floater = DamageFloaterSpawner.Instance.Spawn(spawnPos);
+
+        if (floater == null) return;
+
+        // 초기화 (재사용 시 스케일/알파 복원)
+        floater.transform.localScale = Vector3.one;
 
         // 텍스트 설정 (획득 재화 표시)
         if (floater.TryGetComponent(out TextMeshPro tmp))
         {
-            tmp.text = $"+{clickInfo.Reward}";
+            tmp.text = $"+{clickInfo.Reward:N0}";
+            tmp.alpha = 1f;
         }
         else if (floater.TryGetComponent(out TextMeshProUGUI tmpUI))
         {
-            tmpUI.text = $"+{clickInfo.Reward}";
+            tmpUI.text = $"+{clickInfo.Reward:N0}";
+            tmpUI.alpha = 1f;
         }
 
         // 랜덤 방향 계산 (위쪽 기준 ± randomAngle)
@@ -36,7 +40,7 @@ public class DamageFloaterFeedback : MonoBehaviour, IFeedback
         Vector3 direction = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f);
         Vector3 targetPos = floater.transform.position + direction * _moveDistance;
 
-        // 이동 + 페이드 아웃 (SetLink로 오브젝트 파괴 시 자동 Kill)
+        // 이동 + 페이드 아웃 (SetLink로 오브젝트 비활성화 시 자동 Kill)
         floater.transform.DOMove(targetPos, _duration)
             .SetEase(Ease.OutCubic)
             .SetLink(floater);
@@ -48,6 +52,7 @@ public class DamageFloaterFeedback : MonoBehaviour, IFeedback
         // CanvasGroup 또는 TMP 알파 페이드
         if (floater.TryGetComponent(out CanvasGroup canvasGroup))
         {
+            canvasGroup.alpha = 1f;
             canvasGroup.DOFade(0f, _duration)
                 .SetEase(Ease.InCubic)
                 .SetLink(floater);
@@ -59,6 +64,7 @@ public class DamageFloaterFeedback : MonoBehaviour, IFeedback
                 .SetLink(floater);
         }
 
-        Destroy(floater, _duration + 0.1f);
+        // DamageFloaterSpawner를 통해 디스폰
+        DamageFloaterSpawner.Instance.Despawn(floater, _duration + 0.1f);
     }
 }

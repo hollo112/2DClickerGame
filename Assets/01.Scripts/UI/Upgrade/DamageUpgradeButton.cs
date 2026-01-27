@@ -9,7 +9,7 @@ public class DamageUpgradeButton : UpgradeButtonBase
     {
         var upgrade = UpgradeManager.Instance;
         int level = upgrade.GetCurrentLevel(UpgradeType.Damage);
-        int cost = GetCurrentCost();
+        double cost = GetCurrentCost();
         bool isMax = upgrade.IsMaxLevel(UpgradeType.Damage);
 
         SetDisplay(
@@ -20,7 +20,7 @@ public class DamageUpgradeButton : UpgradeButtonBase
         );
     }
 
-    protected override int GetCurrentCost()
+    protected override double GetCurrentCost()
     {
         return UpgradeManager.Instance.GetUpgradeCost(UpgradeType.Damage);
     }

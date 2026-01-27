@@ -25,7 +25,7 @@ public class ClickTarget : MonoBehaviour, IClickable
             return false;
         }
 
-        int reward = _baseReward + clickInfo.Damage;
+        double reward = _baseReward + clickInfo.Damage;
         CurrencyManager.Instance.AddMoney(reward);
 
         var feedbacks = GetComponentsInChildren<IFeedback>();

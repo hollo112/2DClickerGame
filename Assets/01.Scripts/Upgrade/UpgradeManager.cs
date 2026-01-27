@@ -12,14 +12,22 @@ public class UpgradeManager : MonoBehaviour
     private int _damageLevel = 0;
     private bool _isAutoClickUnlocked = false;
     private int _autoClickSpeedLevel = 0;
+    private bool _isBuildingUnlocked = false;
+    private int _buildingLevel = 0;
 
     // 프로퍼티
     public int ToolLevel => _toolLevel;
-    public int BonusDamage => _damageLevel * _data.DamagePerLevel;
+    public double BonusDamage => _damageLevel * _data.DamagePerLevel;
     public bool IsAutoClickUnlocked => _isAutoClickUnlocked;
     public float AutoClickInterval => Mathf.Max(
         _data.BaseAutoClickInterval - (_autoClickSpeedLevel * _data.IntervalReductionPerLevel),
         _data.MinAutoClickInterval
+    );
+    public bool IsBuildingUnlocked => _isBuildingUnlocked;
+    public double BuildingIncome => _data.BaseBuildingIncome;
+    public float BuildingInterval => Mathf.Max(
+        _data.BaseBuildingInterval - (_buildingLevel * _data.IntervalReductionPerBuildingLevel),
+        _data.MinBuildingInterval
     );
 
     // 업그레이드 이벤트
@@ -38,7 +46,7 @@ public class UpgradeManager : MonoBehaviour
     // 업그레이드 시도. 성공 시 true 반환
     public bool TryUpgrade(UpgradeType type)
     {
-        int cost = GetUpgradeCost(type);
+        double cost = GetUpgradeCost(type);
         if (cost < 0 || !CurrencyManager.Instance.CanAfford(cost))
         {
             Debug.Log($"[Upgrade] {type} 실패 - 비용 부족 또는 최대 레벨");
@@ -55,7 +63,7 @@ public class UpgradeManager : MonoBehaviour
     }
 
     // 업그레이드 비용 조회. 최대 레벨이면 -1 반환
-    public int GetUpgradeCost(UpgradeType type)
+    public double GetUpgradeCost(UpgradeType type)
     {
         switch (type)
         {
@@ -76,6 +84,15 @@ public class UpgradeManager : MonoBehaviour
                 if (_autoClickSpeedLevel >= _data.MaxAutoClickLevel) return -1;
                 return _data.AutoClickSpeedCosts[_autoClickSpeedLevel];
 
+            case UpgradeType.BuildingUnlock:
+                if (_isBuildingUnlocked) return -1;
+                return _data.BuildingUnlockCost;
+
+            case UpgradeType.BuildingIncome:
+                if (!_isBuildingUnlocked) return -1;  // 해금 필요
+                if (_buildingLevel >= _data.MaxBuildingLevel) return -1;
+                return _data.BuildingUpgradeCosts[_buildingLevel];
+
             default:
                 return -1;
         }
@@ -90,6 +107,8 @@ public class UpgradeManager : MonoBehaviour
             UpgradeType.Damage => _damageLevel,
             UpgradeType.AutoClickUnlock => _isAutoClickUnlocked ? 1 : 0,
             UpgradeType.AutoClickSpeed => _autoClickSpeedLevel,
+            UpgradeType.BuildingUnlock => _isBuildingUnlocked ? 1 : 0,
+            UpgradeType.BuildingIncome => _buildingLevel,
             _ => 0
         };
     }
@@ -103,6 +122,8 @@ public class UpgradeManager : MonoBehaviour
             UpgradeType.Damage => _damageLevel >= _data.MaxDamageLevel,
             UpgradeType.AutoClickUnlock => _isAutoClickUnlocked,
             UpgradeType.AutoClickSpeed => _autoClickSpeedLevel >= _data.MaxAutoClickLevel,
+            UpgradeType.BuildingUnlock => _isBuildingUnlocked,
+            UpgradeType.BuildingIncome => _buildingLevel >= _data.MaxBuildingLevel,
             _ => true
         };
     }
@@ -129,6 +150,16 @@ public class UpgradeManager : MonoBehaviour
             case UpgradeType.AutoClickSpeed:
                 _autoClickSpeedLevel++;
                 Debug.Log($"[Upgrade] 오토클릭 속도 UP! Lv.{_autoClickSpeedLevel} (간격: {AutoClickInterval:F2}s)");
+                break;
+
+            case UpgradeType.BuildingUnlock:
+                _isBuildingUnlocked = true;
+                Debug.Log("[Upgrade] 건축물 해금!");
+                break;
+
+            case UpgradeType.BuildingIncome:
+                _buildingLevel++;
+                Debug.Log($"[Upgrade] 건축물 수입 속도 UP! Lv.{_buildingLevel} (간격: {BuildingInterval:F2}s)");
                 break;
         }
 
