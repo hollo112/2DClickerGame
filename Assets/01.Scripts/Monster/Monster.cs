@@ -1,49 +1,29 @@
+using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// 몬스터의 상태를 관리하고 각 컴포넌트를 조율 (코디네이터)
-/// </summary>
-[RequireComponent(typeof(MonsterAnimator))]
-[RequireComponent(typeof(MonsterMovement))]
-[RequireComponent(typeof(MonsterAttack))]
 public class Monster : MonoBehaviour
 {
-    public enum State
-    {
-        Spawning,
-        Idle,
-        Moving,
-        Attacking
-    }
+    public enum State { Spawning, Idle, Moving, Attacking }
+
+    [Header("--- Debug Info ---")]
+    [SerializeField] private int _currentTier;
+    [SerializeField] private bool _isRegisteredInManager;
+    [SerializeField] private State _currentState;
+    [SerializeField] private string _targetName;
+    [SerializeField] private bool _isMerging = false; // 머지 중인지 확인
 
     [Header("Components")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    // 컴포넌트 참조
     private MonsterAnimator _animator;
     private MonsterMovement _movement;
     private MonsterAttack _attack;
-
-    // 상태
     private MonsterManager _manager;
     private MonsterData.TierInfo _tierInfo;
-    private int _tier;
-    private State _state = State.Spawning;
     private Resource _targetResource;
 
-    // 프로퍼티
-    public int Tier => _tier;
-    public Vector2 Position => transform.position;
+    public int Tier => _currentTier;
     public Resource TargetResource => _targetResource;
-
-    private int AttackableResourceLevel
-    {
-        get
-        {
-            // 플레이어와 동일한 레벨까지 공격 가능
-            return UpgradeManager.Instance?.ToolLevel ?? 0;
-        }
-    }
 
     private void Awake()
     {
@@ -55,185 +35,119 @@ public class Monster : MonoBehaviour
     public void Initialize(MonsterManager manager, int tier, MonsterData.TierInfo tierInfo)
     {
         _manager = manager;
-        _tier = tier;
+        _currentTier = tier;
         _tierInfo = tierInfo;
 
-        // 스프라이트 설정
         if (_spriteRenderer != null && tierInfo.Sprite != null)
-        {
             _spriteRenderer.sprite = tierInfo.Sprite;
-        }
 
-        // 컴포넌트 초기화
         _animator.Initialize(transform.localScale);
-        _animator.OnSpawnComplete += OnSpawnComplete;
-        _animator.OnMergeComplete += OnMergeComplete;
+        _animator.OnSpawnComplete += () => ChangeState(State.Idle);
+        _animator.OnMergeComplete += () => Destroy(gameObject);
+        
+        _movement.Initialize(manager.Data.MoveSpeed);
+        _attack.Initialize(tierInfo.AttackDamage, tierInfo.AttackInterval, tierInfo.AttackRange);
         _attack.OnAttackPerformed += OnAttackPerformed;
 
-        _movement.Initialize(manager.Data.MoveSpeed);
-        _movement.OnPositionChanged += OnPositionChanged;
-
-        _attack.Initialize(tierInfo.AttackDamage, tierInfo.AttackInterval, tierInfo.AttackRange);
-
-        // 스폰 애니메이션 시작
-        _state = State.Spawning;
+        RefreshDebugInfo();
+        _currentState = State.Spawning;
         _animator.PlaySpawn();
-
-        Debug.Log($"[Monster] {tierInfo.Name} 초기화 - 공격력: {tierInfo.AttackDamage}, 간격: {tierInfo.AttackInterval}s");
     }
 
     private void Update()
     {
-        switch (_state)
+        // 머지 중이거나 스폰 중이면 모든 로직 중단
+        if (_isMerging || _currentState == State.Spawning) return;
+
+        if (MonsterManager.Instance != null)
         {
-            case State.Spawning:
-                // 애니메이션 완료 대기
-                break;
-            case State.Idle:
-                HandleIdle();
-                break;
-            case State.Moving:
-                HandleMoving();
-                break;
-            case State.Attacking:
-                HandleAttacking();
-                break;
+            bool currentlyRegistered = MonsterManager.Instance.Monsters.Contains(this);
+            if (_isRegisteredInManager != currentlyRegistered)
+            {
+                _isRegisteredInManager = currentlyRegistered;
+                string regStatus = _isRegisteredInManager ? "OK" : "MISSING";
+                gameObject.name = $"Monster_T{_currentTier} [{regStatus}]";
+            }
+        }
+
+        _targetName = _targetResource != null ? _targetResource.name : "None";
+
+        switch (_currentState)
+        {
+            case State.Idle: HandleIdle(); break;
+            case State.Moving: HandleMoving(); break;
+            case State.Attacking: HandleAttacking(); break;
+        }
+    }
+
+    private void RefreshDebugInfo()
+    {
+        if (_manager != null)
+            _isRegisteredInManager = _manager.Monsters.Contains(this);
+        
+        string regStatus = _isRegisteredInManager ? "OK" : "MISSING";
+        gameObject.name = $"Monster_T{_currentTier} [{regStatus}]";
+    }
+
+    private void ChangeState(State newState)
+    {
+        if (_isMerging || _currentState == newState) return;
+        if (_currentState == State.Moving) _animator.StopMove();
+        
+        _currentState = newState;
+
+        switch (newState)
+        {
+            case State.Idle: _animator.PlayIdle(); break;
+            case State.Moving: _animator.PlayMove(); break;
+            case State.Attacking: _animator.PlayIdle(); break;
         }
     }
 
     private void HandleIdle()
     {
-        _targetResource = _manager.FindRandomResource(AttackableResourceLevel);
-
+        _targetResource = _manager.FindRandomResource(UpgradeManager.Instance?.ToolLevel ?? 0);
         if (_targetResource != null)
         {
             _movement.SetTarget(_targetResource.transform);
-            _attack.SetAttackableLevel(AttackableResourceLevel);
+            _attack.SetAttackableLevel(UpgradeManager.Instance?.ToolLevel ?? 0);
             ChangeState(State.Moving);
         }
     }
 
     private void HandleMoving()
     {
-        if (!_movement.HasTarget || _targetResource == null)
-        {
-            _movement.ClearTarget();
-            ChangeState(State.Idle);
-            return;
-        }
-
-        if (_movement.IsInRange(_attack.AttackRange))
-        {
-            _attack.ResetTimer();
-            ChangeState(State.Attacking);
-            return;
-        }
-
+        if (_targetResource == null) { ChangeState(State.Idle); return; }
+        if (_movement.IsInRange(_attack.AttackRange)) { _attack.ResetTimer(); ChangeState(State.Attacking); return; }
         _movement.Move();
     }
 
     private void HandleAttacking()
     {
-        if (_targetResource == null)
-        {
-            ChangeState(State.Idle);
-            return;
-        }
-
-        // 타겟이 범위를 벗어났으면 다시 이동
-        if (_movement.IsOutOfRange(_attack.AttackRange * 1.2f))
-        {
-            ChangeState(State.Moving);
-            return;
-        }
-
-        bool targetDestroyed = _attack.TryAttack(_targetResource);
-        if (targetDestroyed)
-        {
-            _targetResource = null;
-            _movement.ClearTarget();
-            ChangeState(State.Idle);
-        }
-    }
-
-    private void ChangeState(State newState)
-    {
-        if (_state == newState) return;
-
-        // 이전 상태 종료 처리
-        switch (_state)
-        {
-            case State.Moving:
-                _animator.StopMove();
-                break;
-        }
-
-        _state = newState;
-
-        // 새 상태 시작 처리
-        switch (newState)
-        {
-            case State.Idle:
-                _animator.PlayIdle();
-                break;
-            case State.Moving:
-                _animator.PlayMove();
-                break;
-            case State.Attacking:
-                _animator.PlayIdle();
-                break;
-        }
-    }
-
-    #region Event Handlers
-
-    private void OnSpawnComplete()
-    {
-        _state = State.Idle;
-    }
-
-    private void OnMergeComplete()
-    {
-        Destroy(gameObject);
+        if (_targetResource == null) { ChangeState(State.Idle); return; }
+        if (_attack.TryAttack(_targetResource)) { _targetResource = null; _movement.ClearTarget(); ChangeState(State.Idle); }
     }
 
     private void OnAttackPerformed()
     {
-        // 타겟 방향 계산 (오른쪽 = 1, 왼쪽 = -1)
-        float direction = 1f;
-        if (_targetResource != null)
-        {
-            direction = _targetResource.transform.position.x > transform.position.x ? 1f : -1f;
-        }
-        _animator.PlayAttack(direction);
+        if (_isMerging) return;
+        float dir = (_targetResource != null && _targetResource.transform.position.x > transform.position.x) ? 1f : -1f;
+        _animator.PlayAttack(dir);
     }
-
-    private void OnPositionChanged(Vector2 newPosition)
-    {
-        _manager.UpdateMonsterPosition(this, newPosition);
-    }
-
-    #endregion
 
     public void OnMerged()
     {
-        _animator.PlayMerge();
-    }
+        if (_isMerging) return;
+        _isMerging = true;
 
-    private void OnDestroy()
-    {
-        if (_animator != null)
-        {
-            _animator.OnSpawnComplete -= OnSpawnComplete;
-            _animator.OnMergeComplete -= OnMergeComplete;
-        }
-        if (_attack != null)
-        {
-            _attack.OnAttackPerformed -= OnAttackPerformed;
-        }
-        if (_movement != null)
-        {
-            _movement.OnPositionChanged -= OnPositionChanged;
-        }
+        // 물리/타겟팅 즉시 차단
+        if (TryGetComponent(out Collider2D col)) col.enabled = false;
+        _targetResource = null;
+        _movement.ClearTarget();
+
+        _animator.PlayMerge();
+
+        // [안전장치] 애니메이션 트윈이 끊겨도 0.5초 후에는 무조건 파괴
+        Destroy(gameObject, 0.5f);
     }
 }
