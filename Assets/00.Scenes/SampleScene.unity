@@ -4770,56 +4770,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278311165}
   m_CullTransparentMesh: 1
---- !u!1 &1304756663
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1304756665}
-  - component: {fileID: 1304756664}
-  m_Layer: 0
-  m_Name: BuildingSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1304756664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1304756663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8766a7264e6efe4499cd8f39d687f664, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BuildingSpawner
-  _buildingPrefab: {fileID: 5691414070000640730, guid: 563e707ac3ec9b44ba3a0168609f0a11, type: 3}
-  _resourceSpawner: {fileID: 1066459636}
-  _minSpacing: 1.5
-  _showGizmos: 1
-  _activeBuildings: []
-  _occupiedPositions: []
---- !u!4 &1304756665
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1304756663}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.76987, y: 0.30096, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1474020907 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3795195412301829133, guid: b153959dd149e433badc5bef07fe4e03, type: 3}
@@ -6480,7 +6430,6 @@ SceneRoots:
   - {fileID: 1998172194}
   - {fileID: 313907906}
   - {fileID: 1066459637}
-  - {fileID: 1304756665}
   - {fileID: 62862581}
   - {fileID: 98258291}
   - {fileID: 782881085}

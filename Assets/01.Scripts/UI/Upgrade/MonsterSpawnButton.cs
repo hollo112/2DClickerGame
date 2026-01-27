@@ -1,17 +1,41 @@
+using UnityEngine;
+
 public class MonsterSpawnButton : UpgradeButtonBase
 {
+    private bool _subscribedToMonsterManager;
+
     protected override void Start()
     {
         base.Start();
-        if (MonsterManager.Instance != null)
+        TrySubscribeToMonsterManager();
+    }
+
+    private void Update()
+    {
+        // MonsterManager가 늦게 초기화될 경우를 대비
+        if (!_subscribedToMonsterManager)
+        {
+            TrySubscribeToMonsterManager();
+        }
+    }
+
+    private void TrySubscribeToMonsterManager()
+    {
+        if (MonsterManager.Instance != null && !_subscribedToMonsterManager)
+        {
             MonsterManager.Instance.OnMonsterChanged += Refresh;
+            _subscribedToMonsterManager = true;
+            Refresh();
+        }
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        if (MonsterManager.Instance != null)
+        if (MonsterManager.Instance != null && _subscribedToMonsterManager)
+        {
             MonsterManager.Instance.OnMonsterChanged -= Refresh;
+        }
     }
 
     protected override bool TryUpgrade()
@@ -28,7 +52,7 @@ public class MonsterSpawnButton : UpgradeButtonBase
             "몬스터 소환",
             "1단계 몬스터 소환",
             "",
-            $"{cost.ToFormattedString()} G"
+            cost >= 0 ? $"{cost.ToFormattedString()} G" : "-"
         );
     }
 
@@ -37,5 +61,16 @@ public class MonsterSpawnButton : UpgradeButtonBase
         if (MonsterManager.Instance == null || MonsterManager.Instance.Data == null)
             return -1;
         return MonsterManager.Instance.Data.SpawnCost;
+    }
+
+    protected override void UpdateInteractable()
+    {
+        if (MonsterManager.Instance == null)
+        {
+            _button.interactable = false;
+            return;
+        }
+
+        _button.interactable = MonsterManager.Instance.CanSpawn();
     }
 }

@@ -20,6 +20,9 @@ public class MonsterData : ScriptableObject
     public double SpawnCost = 50;               // 소환 비용
     public double MergeCost = 100;              // 머지 비용
 
+    [Header("Limit Settings")]
+    public int MaxMonstersPerTier = 10;         // 단계별 최대 몬스터 수
+
     [Header("Movement Settings")]
     public float MoveSpeed = 2f;                // 이동 속도
     public float MinSpacing = 1.5f;             // 최소 간격

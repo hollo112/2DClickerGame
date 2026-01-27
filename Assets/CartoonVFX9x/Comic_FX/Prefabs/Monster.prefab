@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 5968770602563510594}
   - component: {fileID: 5073450694035872163}
   - component: {fileID: 6589694574734900176}
+  - component: {fileID: 6993427095935107}
+  - component: {fileID: 8259958582813363162}
+  - component: {fileID: -963775835736600856}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -106,3 +109,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Monster
   _spriteRenderer: {fileID: 5073450694035872163}
   _spawnDuration: 0.3
+  _bounceHeight: 0.15
+  _bounceSpeed: 0.15
+--- !u!114 &6993427095935107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7071343677586724615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ac0dfbe12b1fa84c991c72589603937, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAnimator
+  _spawnDuration: 0.3
+  _bounceHeight: 0.15
+  _bounceSpeed: 0.15
+  _attackPunchScale: 0.2
+  _attackDuration: 0.2
+  _mergeDuration: 0.2
+--- !u!114 &8259958582813363162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7071343677586724615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b432e4d07db3a346aae601cb8f41a7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAttack
+--- !u!114 &-963775835736600856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7071343677586724615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ab1c44bf534a354a9b5242f5555cbdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterMovement
+  _spriteRenderer: {fileID: 5073450694035872163}

@@ -1,17 +1,41 @@
+using UnityEngine;
+
 public class MonsterMergeButton : UpgradeButtonBase
 {
+    private bool _subscribedToMonsterManager;
+
     protected override void Start()
     {
         base.Start();
-        if (MonsterManager.Instance != null)
+        TrySubscribeToMonsterManager();
+    }
+
+    private void Update()
+    {
+        // MonsterManager가 늦게 초기화될 경우를 대비
+        if (!_subscribedToMonsterManager)
+        {
+            TrySubscribeToMonsterManager();
+        }
+    }
+
+    private void TrySubscribeToMonsterManager()
+    {
+        if (MonsterManager.Instance != null && !_subscribedToMonsterManager)
+        {
             MonsterManager.Instance.OnMonsterChanged += Refresh;
+            _subscribedToMonsterManager = true;
+            Refresh();
+        }
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        if (MonsterManager.Instance != null)
+        if (MonsterManager.Instance != null && _subscribedToMonsterManager)
+        {
             MonsterManager.Instance.OnMonsterChanged -= Refresh;
+        }
     }
 
     protected override bool TryUpgrade()
@@ -28,7 +52,7 @@ public class MonsterMergeButton : UpgradeButtonBase
             "몬스터 머지",
             "같은 단계 3마리 합성",
             "",
-            $"{cost.ToFormattedString()} G"
+            cost >= 0 ? $"{cost.ToFormattedString()} G" : "-"
         );
     }
 

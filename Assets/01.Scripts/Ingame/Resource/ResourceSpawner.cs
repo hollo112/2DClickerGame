@@ -5,7 +5,7 @@ public class ResourceSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
     [SerializeField] private GameObject[] _resourcePrefabs;  // 인덱스 = RequiredToolLevel
-    [SerializeField] private int _maxResourceCount = 10;
+    [SerializeField] private int _maxResourceCount = 15;
     [SerializeField] private float _minSpacing = 1.5f;
     [SerializeField] private float _respawnDelay = 3f;
 

@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: b9055bbe7c99b468eb98a97f972af22f
+guid: cd2a51a96d6550d4fba15af23aef7b90
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 1740370070447258625
+    second: SampleCha_02_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -81,33 +84,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
     buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -139,86 +116,20 @@ TextureImporter:
       name: SampleCha_02_0
       rect:
         serializedVersion: 2
-        x: 428
-        y: 253
-        width: 156
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7b10aebaa2fe37c4e83e827a28bf32ab
-      internalID: -1160518139
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SampleCha_02_1
-      rect:
-        serializedVersion: 2
-        x: 529
-        y: 199
-        width: 133
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f9f4b109899b1684886b0d81ca10e927
-      internalID: -769225225
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SampleCha_02_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 265
-        height: 237
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8cc4d366eab5bed4fa000957972274f6
-      internalID: -864753644
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SampleCha_02_3
-      rect:
-        serializedVersion: 2
-        x: 363
-        y: 98
-        width: 184
-        height: 130
+        x: 4
+        y: 24
+        width: 186
+        height: 132
       alignment: 9
-      pivot: {x: 0.4655503, y: 0.113983445}
+      pivot: {x: 0.67235637, y: 0.10860472}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: e92d6445810d3f344aceedea07eb7a35
-      internalID: 412668874
+      spriteID: 10cfab2bb59072810800000000000000
+      internalID: 1740370070447258625
       vertices: []
       indices: 
       edges: []
@@ -227,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 50f952977ba1c9f49b293854d9405967
     internalID: 0
     vertices: []
     indices: 
@@ -235,14 +146,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      SampleCha_02_0: -1160518139
-      SampleCha_02_1: -769225225
-      SampleCha_02_2: -864753644
-      SampleCha_02_3: 412668874
+      SampleCha_02_0: 1740370070447258625
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
