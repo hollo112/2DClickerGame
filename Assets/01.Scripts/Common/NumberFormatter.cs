@@ -24,8 +24,14 @@ public static class NumberFormatter
             suffixIndex++;
         }
 
-        if (displayValue >= 100) return $"{displayValue:F0}{Suffixes[suffixIndex]}";
-        if (displayValue >= 10) return $"{displayValue:F1}{Suffixes[suffixIndex]}";
-        return $"{displayValue:F2}{Suffixes[suffixIndex]}";
+        string numberStr;
+        if (displayValue >= 100)
+            numberStr = $"{displayValue:F0}";
+        else if (displayValue >= 10)
+            numberStr = $"{displayValue:F1}".TrimEnd('0').TrimEnd('.');
+        else
+            numberStr = $"{displayValue:F2}".TrimEnd('0').TrimEnd('.');
+
+        return $"{numberStr}{Suffixes[suffixIndex]}";
     }
 }

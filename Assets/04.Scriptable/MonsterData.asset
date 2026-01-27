@@ -21,22 +21,22 @@ MonoBehaviour:
   - Name: 
     Sprite: {fileID: 21300000, guid: 6464de93944804275b97db219055d540, type: 3}
     AttackDamage: 20
-    AttackInterval: 0.9
+    AttackInterval: 0.85
     AttackRange: 1
   - Name: 
     Sprite: {fileID: 5497494678373784211, guid: 17a824a3865e39f4f8ffefb5eb99cc3b, type: 3}
     AttackDamage: 130
-    AttackInterval: 0.8
+    AttackInterval: 0.7
     AttackRange: 1
   - Name: 
     Sprite: {fileID: 21300000, guid: 51b0e6af0a4d9409f9b73cd3c19fe662, type: 3}
     AttackDamage: 850
-    AttackInterval: 0.7
+    AttackInterval: 0.55
     AttackRange: 1
   - Name: 
     Sprite: {fileID: 1740370070447258625, guid: cd2a51a96d6550d4fba15af23aef7b90, type: 3}
     AttackDamage: 6000
-    AttackInterval: 0.6
+    AttackInterval: 0.4
     AttackRange: 1
   SpawnCost: 100
   MergeCosts:

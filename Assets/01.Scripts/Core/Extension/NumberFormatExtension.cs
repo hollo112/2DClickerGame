@@ -26,8 +26,14 @@ public static class NumberFormatExtension
             suffixIndex++;
         }
         
-        if (value >= 100) return $"{value:F0}{_suffixes[suffixIndex]}";
-        if (value >= 10)  return $"{value:F1}{_suffixes[suffixIndex]}";
-        return $"{value:F2}{_suffixes[suffixIndex]}";
+        string numberStr;
+        if (value >= 100)
+            numberStr = $"{value:F0}";
+        else if (value >= 10)
+            numberStr = $"{value:F1}".TrimEnd('0').TrimEnd('.');
+        else
+            numberStr = $"{value:F2}".TrimEnd('0').TrimEnd('.');
+
+        return $"{numberStr}{_suffixes[suffixIndex]}";
     }
 }

@@ -5,6 +5,7 @@ using DG.Tweening;
 public class DamageFloaterFeedback : MonoBehaviour, IFeedback
 {
     [Header("Animation Settings")]
+    [SerializeField] private float _spawnOffsetX = 0f;
     [SerializeField] private float _spawnOffsetY = 0.5f;
     [SerializeField] private float _moveDistance = 1f;
     [SerializeField] private float _duration = 0.8f;
@@ -14,7 +15,7 @@ public class DamageFloaterFeedback : MonoBehaviour, IFeedback
     {
         if (DamageFloaterSpawner.Instance == null) return;
 
-        Vector3 spawnPos = transform.position + Vector3.up * _spawnOffsetY;
+        Vector3 spawnPos = transform.position + new Vector3(_spawnOffsetX, _spawnOffsetY, 0f);
         GameObject floater = DamageFloaterSpawner.Instance.Spawn(spawnPos);
 
         if (floater == null) return;
