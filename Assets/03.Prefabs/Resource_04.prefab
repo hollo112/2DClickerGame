@@ -317,8 +317,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Resource
   _name: Resource_04
   _requiredToolLevel: 4
-  _baseReward: 500
-  _maxHp: 380
+  _baseReward: 450
+  _maxHp: 350
   _destroyEffectPrefab: {fileID: 2213390171910699386, guid: 99c50f24d134da940a0f2376949c532a, type: 3}
   _spawnOffsetY: -0.5
   _spawnDuration: 0.3
