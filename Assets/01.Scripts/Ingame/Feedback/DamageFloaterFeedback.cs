@@ -25,12 +25,12 @@ public class DamageFloaterFeedback : MonoBehaviour, IFeedback
         // 텍스트 설정 (획득 재화 표시)
         if (floater.TryGetComponent(out TextMeshPro tmp))
         {
-            tmp.text = $"+{clickInfo.Reward:N0}";
+            tmp.text = $"+{clickInfo.Reward.ToFormattedString()}";
             tmp.alpha = 1f;
         }
         else if (floater.TryGetComponent(out TextMeshProUGUI tmpUI))
         {
-            tmpUI.text = $"+{clickInfo.Reward:N0}";
+            tmpUI.text = $"+{clickInfo.Reward.ToFormattedString()}";
             tmpUI.alpha = 1f;
         }
 

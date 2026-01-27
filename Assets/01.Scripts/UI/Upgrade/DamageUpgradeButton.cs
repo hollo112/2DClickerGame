@@ -16,7 +16,7 @@ public class DamageUpgradeButton : UpgradeButtonBase
             "약탈량",
             "클릭당 획득 재화 증가",
             $"Lv.{level}",
-            isMax ? "MAX" : $"{cost:N0} G"
+            isMax ? "MAX" : $"{cost.ToFormattedString()} G"
         );
     }
 

@@ -18,7 +18,7 @@ public class AutoClickUpgradeButton : UpgradeButtonBase
                 "오토클릭",
                 "클릭 유지 시 자동 채굴",
                 "미해금",
-                $"{GetCurrentCost():N0} G"
+                $"{GetCurrentCost().ToFormattedString()} G"
             );
             return;
         }
@@ -31,7 +31,7 @@ public class AutoClickUpgradeButton : UpgradeButtonBase
             "오토클릭",
             "자동 채굴 속도 증가",
             $"Lv.{level}",
-            isMax ? "MAX" : $"{cost:N0} G"
+            isMax ? "MAX" : $"{cost.ToFormattedString()} G"
         );
     }
 

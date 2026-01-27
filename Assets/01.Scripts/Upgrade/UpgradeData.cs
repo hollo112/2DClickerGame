@@ -21,15 +21,4 @@ public class UpgradeData : ScriptableObject
     public float BaseAutoClickInterval = 1f;
     public float IntervalReductionPerLevel = 0.08f;  // 레벨당 감소량
     public float MinAutoClickInterval = 0.2f;        // 최소 간격
-
-    [Header("Building Unlock (건축물 해금)")]
-    public double BuildingUnlockCost = 500;
-    public double BaseBuildingIncome = 5;  // 기본 수입
-
-    [Header("Building Income (건축물 수입 속도)")]
-    public int MaxBuildingLevel = 10;
-    public double[] BuildingUpgradeCosts;
-    public float BaseBuildingInterval = 5f;         // 기본 수입 간격 (초)
-    public float IntervalReductionPerBuildingLevel = 0.3f;  // 레벨당 감소량
-    public float MinBuildingInterval = 1f;          // 최소 간격
 }

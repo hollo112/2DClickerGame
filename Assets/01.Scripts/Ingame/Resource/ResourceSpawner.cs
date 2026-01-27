@@ -208,12 +208,12 @@ public class ResourceSpawner : MonoBehaviour
             }
         }
 
-        // Building과의 거리 검사
-        if (BuildingSpawner.Instance != null)
+        // Monster와의 거리 검사
+        if (MonsterManager.Instance != null)
         {
-            foreach (Vector2 buildingPos in BuildingSpawner.Instance.OccupiedPositions)
+            foreach (Vector2 monsterPos in MonsterManager.Instance.OccupiedPositions)
             {
-                if (Vector2.Distance(position, buildingPos) < _minSpacing)
+                if (Vector2.Distance(position, monsterPos) < _minSpacing)
                 {
                     return false;
                 }

@@ -16,7 +16,7 @@ public class ToolUpgradeButton : UpgradeButtonBase
             "총 강화",
             "더 높은 등급의 주민을 약탈",
             $"Lv.{level}",
-            isMax ? "MAX" : $"{cost:N0} G"
+            isMax ? "MAX" : $"{cost.ToFormattedString()} G"
         );
     }
 

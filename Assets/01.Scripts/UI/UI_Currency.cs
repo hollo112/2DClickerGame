@@ -19,6 +19,6 @@ public class UI_Currency : MonoBehaviour
 
     private void UpdateMoneyText(double money)
     {
-        _moneyText.text = $"{money:N0} G";
+        _moneyText.text = $"{money.ToFormattedString()} G";
     }
 }

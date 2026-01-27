@@ -13,13 +13,70 @@ MonoBehaviour:
   m_Name: UpgradeData
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   MaxToolLevel: 10
-  ToolUpgradeCosts: 0a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
+  ToolUpgradeCosts:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   MaxDamageLevel: 20
-  DamageUpgradeCosts: 0a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
+  DamageUpgradeCosts:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   DamagePerLevel: 1
   AutoClickUnlockCost: 100
   MaxAutoClickLevel: 10
-  AutoClickSpeedCosts: 0a0000000a000000000000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
+  AutoClickSpeedCosts:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   BaseAutoClickInterval: 1
   IntervalReductionPerLevel: 0.08
   MinAutoClickInterval: 0.2
+  BuildingUnlockCost: 500
+  BaseBuildingIncome: 5
+  MaxBuildingLevel: 10
+  BuildingUpgradeCosts:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  BaseBuildingInterval: 5
+  IntervalReductionPerBuildingLevel: 0.3
+  MinBuildingInterval: 1
