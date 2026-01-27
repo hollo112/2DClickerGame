@@ -9,7 +9,7 @@ public class Resource : MonoBehaviour, IClickable
     [SerializeField] private double _baseReward = 10;
 
     [Header("HP Settings")]
-    [SerializeField] private int _maxHp = 5;
+    [SerializeField] private double _maxHp = 5;
 
     [Header("Effects")]
     [SerializeField] private GameObject _destroyEffectPrefab;
@@ -20,14 +20,14 @@ public class Resource : MonoBehaviour, IClickable
     [SerializeField] private float _spawnOffsetY = -0.5f;
     [SerializeField] private float _spawnDuration = 0.3f;
 
-    private int _currentHp;
+    private double _currentHp;
     private ResourceSpawner _spawner;
     private Vector2 _spawnedPosition;
     private int _spawnedLevel;
 
     public int RequiredToolLevel => _requiredToolLevel;
-    public int CurrentHp => _currentHp;
-    public int MaxHp => _maxHp;
+    public double CurrentHp => _currentHp;
+    public double MaxHp => _maxHp;
 
     public void Initialize(ResourceSpawner spawner, int spawnedLevel)
     {
@@ -95,7 +95,7 @@ public class Resource : MonoBehaviour, IClickable
 
     private void TakeDamage(double damage)
     {
-        _currentHp -= (int)damage;
+        _currentHp -= damage;
 
         Debug.Log($"[{_name}] HP: {_currentHp}/{_maxHp}");
 
