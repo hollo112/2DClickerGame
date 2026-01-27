@@ -54,7 +54,7 @@ public class MonsterMergeButton : UpgradeButtonBase
             "몬스터 머지",
             $"같은 단계 3마리 합성{tierText}",
             "",
-            cost >= 0 ? $"{cost.ToFormattedString()} G" : "-"
+            cost >= 0 ? $"{cost.ToFormattedString()}" : "-"
         );
     }
 

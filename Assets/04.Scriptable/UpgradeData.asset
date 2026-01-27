@@ -46,7 +46,27 @@ MonoBehaviour:
   - 110000
   - 160000
   - 250000
-  DamagePerLevel: 2
+  DamagePerLevels:
+  - 2
+  - 2
+  - 2
+  - 2
+  - 2
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 100
+  - 100
+  - 100
+  - 100
+  - 100
   AutoClickUnlockCost: 100
   MaxAutoClickLevel: 10
   AutoClickSpeedCosts:

@@ -52,7 +52,7 @@ public class MonsterSpawnButton : UpgradeButtonBase
             "몬스터 소환",
             "1단계 몬스터 소환",
             "",
-            cost >= 0 ? $"{cost.ToFormattedString()} G" : "-"
+            cost >= 0 ? $"{cost.ToFormattedString()}" : "-"
         );
     }
 

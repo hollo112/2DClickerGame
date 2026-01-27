@@ -39,8 +39,13 @@ MonoBehaviour:
     AttackInterval: 0.6
     AttackRange: 1
   SpawnCost: 100
-  MergeCost: 100
-  MaxMonstersPerTier: 5
+  MergeCosts:
+  - 300
+  - 2500
+  - 15000
+  - 100000
+  - 1000000
+  MaxMonstersPerTier: 6
   MoveSpeed: 2
   MinSpacing: 1.5
   MonsterPrefab: {fileID: 7071343677586724615, guid: 4b4dc3106c6c6eb4f9004f282d016f6b, type: 3}
