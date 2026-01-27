@@ -189,6 +189,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundFeedback
   _audio: {fileID: 4467752890657691803}
+  _playerClip: {fileID: 8300000, guid: b25e99d615bac424386af8197a4c3224, type: 3}
+  _monsterClip: {fileID: 8300000, guid: 6aabd76da16089f4dbad06aa0322e342, type: 3}
 --- !u!82 &4467752890657691803
 AudioSource:
   m_ObjectHideFlags: 0

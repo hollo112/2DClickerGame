@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ResourceSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
-    [SerializeField] private GameObject[] _resourcePrefabs;  // 인덱스 = RequiredToolLevel
+    [SerializeField] private GameObject[] _resourcePrefabs;
     [SerializeField] private int _maxResourceCount = 15;
     [SerializeField] private float _minSpacing = 1.5f;
     [SerializeField] private float _respawnDelay = 3f;
@@ -17,14 +18,12 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private bool _showGizmos = true;
 
     private List<GameObject> _activeResources = new List<GameObject>();
-    private List<Vector2> _occupiedPositions = new List<Vector2>();
-    private Dictionary<int, int> _levelCounts = new Dictionary<int, int>();  // 레벨별 개수
+    private Dictionary<int, int> _levelCounts = new Dictionary<int, int>();
 
-    // 외부에서 스폰 영역 및 점유 위치 조회용
     public Vector2 AreaCenter => _areaCenter;
     public Vector2 AreaSize => _areaSize;
-    public float MinSpacing => _minSpacing;
-    public IReadOnlyList<Vector2> OccupiedPositions => _occupiedPositions;
+    
+    public IReadOnlyList<GameObject> ActiveResources => _activeResources;
 
     private void Start()
     {
@@ -34,26 +33,22 @@ public class ResourceSpawner : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (UpgradeManager.Instance != null)
-            UpgradeManager.Instance.OnUpgraded -= OnUpgraded;
+        if (UpgradeManager.Instance != null) UpgradeManager.Instance.OnUpgraded -= OnUpgraded;
     }
 
     private void OnUpgraded(UpgradeType type, int level)
     {
-        if (type == UpgradeType.Tool)
-            RemoveOutOfRangeResources();
+        if (type == UpgradeType.Tool) RemoveOutOfRangeResources();
     }
 
     private void RemoveOutOfRangeResources()
     {
         int toolLevel = UpgradeManager.Instance?.ToolLevel ?? 0;
         int maxIndex = _resourcePrefabs.Length - 1;
-
         int minLevel = Mathf.Clamp(toolLevel - 1, 0, maxIndex);
         int maxLevel = Mathf.Clamp(toolLevel + 1, 0, maxIndex);
 
         int removeCount = 0;
-
         for (int i = _activeResources.Count - 1; i >= 0; i--)
         {
             var obj = _activeResources[i];
@@ -61,7 +56,6 @@ public class ResourceSpawner : MonoBehaviour
             {
                 if (res.RequiredToolLevel < minLevel || res.RequiredToolLevel > maxLevel)
                 {
-                    _occupiedPositions.RemoveAt(i);
                     _activeResources.RemoveAt(i);
                     RemoveLevelCount(res.RequiredToolLevel);
                     res.ForceDestroy();
@@ -69,112 +63,54 @@ public class ResourceSpawner : MonoBehaviour
                 }
             }
         }
-
-        // 제거된 만큼 즉시 스폰
-        for (int i = 0; i < removeCount; i++)
-        {
-            SpawnResource();
-        }
+        for (int i = 0; i < removeCount; i++) SpawnResource();
     }
 
-    private void SpawnInitialResources()
-    {
-        for (int i = 0; i < _maxResourceCount; i++)
-        {
-            SpawnResource();
-        }
-    }
+    private void SpawnInitialResources() { for (int i = 0; i < _maxResourceCount; i++) SpawnResource(); }
 
     public void SpawnResource()
     {
         if (_activeResources.Count >= _maxResourceCount) return;
 
         Vector2? spawnPos = FindValidSpawnPosition();
-        if (spawnPos == null)
-        {
-            Debug.LogWarning("[ResourceSpawner] 유효한 스폰 위치를 찾지 못했습니다.");
-            return;
-        }
+        if (spawnPos == null) return;
 
         int prefabIndex = GetBalancedLevelIndex();
         GameObject prefab = _resourcePrefabs[prefabIndex];
         GameObject resource = Instantiate(prefab, spawnPos.Value, Quaternion.identity, transform);
 
-        // 좌우 방향 랜덤
         float direction = Random.value > 0.5f ? 1f : -1f;
         Vector3 scale = resource.transform.localScale;
         scale.x = Mathf.Abs(scale.x) * direction;
         resource.transform.localScale = scale;
 
-        // Feedback에 원본 scale 설정
-        if (resource.TryGetComponent(out ScaleTweeningFeedback feedback))
-        {
-            feedback.SetOriginalScale(scale);
-        }
+        if (resource.TryGetComponent(out ScaleTweeningFeedback feedback)) feedback.SetOriginalScale(scale);
 
         _activeResources.Add(resource);
-        _occupiedPositions.Add(spawnPos.Value);
-
-        // 레벨 카운트 증가
         AddLevelCount(prefabIndex);
 
-        if (resource.TryGetComponent(out Resource res))
-        {
-            res.Initialize(this, prefabIndex);
-        }
+        if (resource.TryGetComponent(out Resource res)) res.Initialize(this, prefabIndex);
     }
 
     private int GetBalancedLevelIndex()
     {
         int toolLevel = UpgradeManager.Instance?.ToolLevel ?? 0;
         int maxIndex = _resourcePrefabs.Length - 1;
+        int[] targetLevels = {
+            Mathf.Clamp(toolLevel - 1, 0, maxIndex),
+            Mathf.Clamp(toolLevel, 0, maxIndex),
+            Mathf.Clamp(toolLevel + 1, 0, maxIndex)
+        };
 
-        // 3개 레벨: toolLevel-1, toolLevel, toolLevel+1
-        int[] targetLevels = new int[3];
-        targetLevels[0] = Mathf.Clamp(toolLevel - 1, 0, maxIndex);
-        targetLevels[1] = Mathf.Clamp(toolLevel, 0, maxIndex);
-        targetLevels[2] = Mathf.Clamp(toolLevel + 1, 0, maxIndex);
-
-        // 각 레벨의 목표 개수 (전체의 1/3)
         int targetCountPerLevel = Mathf.CeilToInt(_maxResourceCount / 3f);
+        var underfilled = targetLevels.Where(lvl => GetLevelCount(lvl) < targetCountPerLevel).ToList();
 
-        // 부족한 레벨 찾기
-        List<int> underfilledLevels = new List<int>();
-        foreach (int level in targetLevels)
-        {
-            int currentCount = GetLevelCount(level);
-            if (currentCount < targetCountPerLevel)
-            {
-                underfilledLevels.Add(level);
-            }
-        }
-
-        // 부족한 레벨 중 랜덤 선택, 없으면 전체 중 랜덤
-        if (underfilledLevels.Count > 0)
-        {
-            return underfilledLevels[Random.Range(0, underfilledLevels.Count)];
-        }
-
-        return targetLevels[Random.Range(0, targetLevels.Length)];
+        return underfilled.Count > 0 ? underfilled[Random.Range(0, underfilled.Count)] : targetLevels[Random.Range(0, targetLevels.Length)];
     }
 
-    private int GetLevelCount(int level)
-    {
-        return _levelCounts.TryGetValue(level, out int count) ? count : 0;
-    }
-
-    private void AddLevelCount(int level)
-    {
-        if (!_levelCounts.ContainsKey(level))
-            _levelCounts[level] = 0;
-        _levelCounts[level]++;
-    }
-
-    private void RemoveLevelCount(int level)
-    {
-        if (_levelCounts.ContainsKey(level) && _levelCounts[level] > 0)
-            _levelCounts[level]--;
-    }
+    private int GetLevelCount(int level) => _levelCounts.TryGetValue(level, out int count) ? count : 0;
+    private void AddLevelCount(int level) { if (!_levelCounts.ContainsKey(level)) _levelCounts[level] = 0; _levelCounts[level]++; }
+    private void RemoveLevelCount(int level) { if (_levelCounts.ContainsKey(level) && _levelCounts[level] > 0) _levelCounts[level]--; }
 
     private Vector2? FindValidSpawnPosition(int maxAttempts = 30)
     {
@@ -183,54 +119,35 @@ public class ResourceSpawner : MonoBehaviour
 
         for (int i = 0; i < maxAttempts; i++)
         {
-            Vector2 candidate = new Vector2(
-                Random.Range(min.x, max.x),
-                Random.Range(min.y, max.y)
-            );
-
-            if (IsValidPosition(candidate))
-            {
-                return candidate;
-            }
+            Vector2 candidate = new Vector2(Random.Range(min.x, max.x), Random.Range(min.y, max.y));
+            if (IsValidPosition(candidate)) return candidate;
         }
-
         return null;
     }
 
     private bool IsValidPosition(Vector2 position)
     {
-        // 다른 Resource와의 거리 검사
-        foreach (Vector2 occupied in _occupiedPositions)
+        // 1. 자원끼리 거리 체크
+        foreach (var obj in _activeResources)
         {
-            if (Vector2.Distance(position, occupied) < _minSpacing)
-            {
-                return false;
-            }
+            if (obj != null && Vector2.Distance(position, obj.transform.position) < _minSpacing) return false;
         }
 
-        // Monster와의 거리 검사
+        // 2. 몬스터 매니저의 실시간 리스트를 통한 거리 체크
         if (MonsterManager.Instance != null)
         {
-            foreach (Vector2 monsterPos in MonsterManager.Instance.OccupiedPositions)
+            foreach (var monster in MonsterManager.Instance.Monsters)
             {
-                if (Vector2.Distance(position, monsterPos) < _minSpacing)
-                {
-                    return false;
-                }
+                if (monster != null && Vector2.Distance(position, monster.transform.position) < _minSpacing) return false;
             }
         }
-
         return true;
     }
 
-    // 자원이 파괴될 때 호출
     public void OnResourceDestroyed(GameObject resource, Vector2 position, int level)
     {
         _activeResources.Remove(resource);
-        _occupiedPositions.Remove(position);
         RemoveLevelCount(level);
-
-        // 일정 시간 후 리스폰
         StartCoroutine(RespawnAfterDelay());
     }
 
@@ -243,11 +160,8 @@ public class ResourceSpawner : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (!_showGizmos) return;
-
-        // 스폰 영역 표시
         Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
         Gizmos.DrawCube(_areaCenter, _areaSize);
-
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(_areaCenter, _areaSize);
     }

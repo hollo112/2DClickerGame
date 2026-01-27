@@ -61,7 +61,8 @@ public class MonsterAttack : MonoBehaviour
         {
             ToolLevel = _attackableLevel,
             Damage = _damage,
-            WorldPosition = target.transform.position
+            WorldPosition = target.transform.position,
+            Type = ClickerType.Monster
         };
 
         bool success = target.OnClick(clickInfo);

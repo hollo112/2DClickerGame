@@ -83,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: a36a03aeca8f64333995dc5a9346eb8e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -108,9 +108,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Monster
   _spriteRenderer: {fileID: 5073450694035872163}
-  _spawnDuration: 0.3
-  _bounceHeight: 0.15
-  _bounceSpeed: 0.15
 --- !u!114 &6993427095935107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,10 +121,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterAnimator
   _spawnDuration: 0.3
+  _idleSquashRatio: 0.1
+  _idleDuration: 0.8
   _bounceHeight: 0.15
   _bounceSpeed: 0.15
-  _attackPunchScale: 0.2
-  _attackDuration: 0.2
+  _attackWindupAngle: 15
+  _attackSwingAngle: 25
+  _attackWindupDuration: 0.1
+  _attackSwingDuration: 0.08
+  _attackReturnDuration: 0.15
   _mergeDuration: 0.2
 --- !u!114 &8259958582813363162
 MonoBehaviour:

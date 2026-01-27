@@ -189,6 +189,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundFeedback
   _audio: {fileID: 4467752890657691803}
+  _playerClip: {fileID: 8300000, guid: b25e99d615bac424386af8197a4c3224, type: 3}
+  _monsterClip: {fileID: 8300000, guid: 6aabd76da16089f4dbad06aa0322e342, type: 3}
 --- !u!82 &4467752890657691803
 AudioSource:
   m_ObjectHideFlags: 0
@@ -332,7 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a374193f6a7060f4197113b434a7909e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageFloaterFeedback
-  _floaterPrefab: {fileID: 7618851102892349357, guid: fa82c4778ad04574aae95e3d57eb386c, type: 3}
   _spawnOffsetY: 1.5
   _moveDistance: 1
   _duration: 0.8
