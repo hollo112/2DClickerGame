@@ -7,14 +7,20 @@ public class UI_Currency : MonoBehaviour
 
     private void Start()
     {
-        CurrencyManager.Instance.OnMoneyChanged += UpdateMoneyText;
-        UpdateMoneyText(CurrencyManager.Instance.CurrentMoney);
+        CurrencyManager.Instance.OnCurrencyChanged += OnCurrencyChanged;
+        UpdateMoneyText(CurrencyManager.Instance.Get(ECurrencyType.Gold));
     }
 
     private void OnDestroy()
     {
         if (CurrencyManager.Instance != null)
-            CurrencyManager.Instance.OnMoneyChanged -= UpdateMoneyText;
+            CurrencyManager.Instance.OnCurrencyChanged -= OnCurrencyChanged;
+    }
+
+    private void OnCurrencyChanged(ECurrencyType type, double amount)
+    {
+        if (type == ECurrencyType.Gold)
+            UpdateMoneyText(amount);
     }
 
     private void UpdateMoneyText(double money)

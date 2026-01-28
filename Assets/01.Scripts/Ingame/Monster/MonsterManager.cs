@@ -25,7 +25,7 @@ public class MonsterManager : MonoBehaviour
     }
 
     #region Spawn & Merge Logic
-    public bool CanSpawn() => _data != null && CurrencyManager.Instance.CanAfford(_data.SpawnCost) && GetTierCount(0) < _data.MaxMonstersPerTier;
+    public bool CanSpawn() => _data != null && CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, _data.SpawnCost) && GetTierCount(0) < _data.MaxMonstersPerTier;
 
     public bool TrySpawnMonster()
     {
@@ -33,7 +33,7 @@ public class MonsterManager : MonoBehaviour
         Vector2? spawnPos = FindValidSpawnPosition();
         if (spawnPos == null) return false;
 
-        CurrencyManager.Instance.SpendMoney(_data.SpawnCost);
+        CurrencyManager.Instance.Spend(ECurrencyType.Gold, _data.SpawnCost);
         return CreateMonster(0, spawnPos.Value);
     }
 
@@ -42,7 +42,7 @@ public class MonsterManager : MonoBehaviour
         if (_data == null) return false;
         int tier = FindMergeableTier();
         if (tier < 0) return false;
-        return CurrencyManager.Instance.CanAfford(GetMergeCost(tier));
+        return CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, GetMergeCost(tier));
     }
 
     public double GetMergeCost(int tier)
@@ -60,12 +60,12 @@ public class MonsterManager : MonoBehaviour
         if (targetTier < 0) return false;
 
         double cost = GetMergeCost(targetTier);
-        if (!CurrencyManager.Instance.CanAfford(cost)) return false;
+        if (!CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, cost)) return false;
 
         var targets = _monsters.Where(m => m != null && m.Tier == targetTier).Take(MonstersRequiredForMerge).ToList();
         if (targets.Count < MonstersRequiredForMerge) return false;
 
-        CurrencyManager.Instance.SpendMoney(cost);
+        CurrencyManager.Instance.Spend(ECurrencyType.Gold, cost);
         Vector2 mergePos = Vector2.zero;
         foreach (var m in targets) mergePos += (Vector2)m.transform.position;
         mergePos /= targets.Count;

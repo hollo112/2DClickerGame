@@ -85,7 +85,7 @@ public class Resource : MonoBehaviour, IClickable
 
         // 보상 지급
         double reward = _baseReward + clickInfo.Damage;
-        CurrencyManager.Instance.AddMoney(reward);
+        CurrencyManager.Instance.Add(ECurrencyType.Gold, reward);
 
         // 피드백 재생 (Reward 설정)
         clickInfo.Reward = reward;

@@ -14,18 +14,21 @@ public abstract class UpgradeButtonBase : MonoBehaviour
     protected virtual void Start()
     {
         _button.onClick.AddListener(OnClick);
-        CurrencyManager.Instance.OnMoneyChanged += _ => Refresh();
-        UpgradeManager.Instance.OnUpgraded += (_, _) => Refresh();
+        CurrencyManager.Instance.OnCurrencyChanged += OnCurrencyChanged;
+        UpgradeManager.Instance.OnUpgraded += OnUpgraded;
         Refresh();
     }
 
     protected virtual void OnDestroy()
     {
         if (CurrencyManager.Instance != null)
-            CurrencyManager.Instance.OnMoneyChanged -= _ => Refresh();
+            CurrencyManager.Instance.OnCurrencyChanged -= OnCurrencyChanged;
         if (UpgradeManager.Instance != null)
-            UpgradeManager.Instance.OnUpgraded -= (_, _) => Refresh();
+            UpgradeManager.Instance.OnUpgraded -= OnUpgraded;
     }
+
+    private void OnCurrencyChanged(ECurrencyType type, double amount) => Refresh();
+    private void OnUpgraded(UpgradeType type, int level) => Refresh();
 
     private void OnClick()
     {
@@ -46,7 +49,7 @@ public abstract class UpgradeButtonBase : MonoBehaviour
     protected virtual void UpdateInteractable()
     {
         double cost = GetCurrentCost();
-        _button.interactable = cost >= 0 && CurrencyManager.Instance.CanAfford(cost);
+        _button.interactable = cost >= 0 && CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, cost);
     }
 
     protected void SetDisplay(string name, string desc, string level, string cost)

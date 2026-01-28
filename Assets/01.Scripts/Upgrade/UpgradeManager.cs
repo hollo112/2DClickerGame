@@ -56,13 +56,13 @@ public class UpgradeManager : MonoBehaviour
     public bool TryUpgrade(UpgradeType type)
     {
         double cost = GetUpgradeCost(type);
-        if (cost < 0 || !CurrencyManager.Instance.CanAfford(cost))
+        if (cost < 0 || !CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, cost))
         {
             Debug.Log($"[Upgrade] {type} 실패 - 비용 부족 또는 최대 레벨");
             return false;
         }
 
-        CurrencyManager.Instance.SpendMoney(cost);
+        CurrencyManager.Instance.Spend(ECurrencyType.Gold, cost);
         ApplyUpgrade(type);
 
         // GameManager에 알려서 Clicker 갱신

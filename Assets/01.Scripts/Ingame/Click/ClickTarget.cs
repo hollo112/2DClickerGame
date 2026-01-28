@@ -26,7 +26,7 @@ public class ClickTarget : MonoBehaviour, IClickable
         }
 
         double reward = _baseReward + clickInfo.Damage;
-        CurrencyManager.Instance.AddMoney(reward);
+        CurrencyManager.Instance.Add(ECurrencyType.Gold, reward);
 
         var feedbacks = GetComponentsInChildren<IFeedback>();
         foreach (var feedback in feedbacks)
