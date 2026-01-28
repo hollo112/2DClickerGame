@@ -36,6 +36,11 @@ public class Resource : MonoBehaviour, IClickable
         _spawnedLevel = spawnedLevel;
         _currentHp = _maxHp;
 
+        if (TryGetComponent(out SpriteRenderer sr))
+        {
+            sr.flipX = Random.value > 0.5f;
+        }
+
         PlaySpawnAnimation();
     }
 

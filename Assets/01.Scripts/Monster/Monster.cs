@@ -129,7 +129,7 @@ public class Monster : MonoBehaviour
     }
 
     private void OnAttackPerformed()
-    {
+    {   
         if (_isMerging) return;
         float dir = (_targetResource != null && _targetResource.transform.position.x > transform.position.x) ? 1f : -1f;
         _animator.PlayAttack(dir);

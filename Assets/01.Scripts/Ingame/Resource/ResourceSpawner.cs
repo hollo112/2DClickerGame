@@ -139,4 +139,12 @@ public class ResourceSpawner : MonoBehaviour
 
     private void AddLevelCount(int l) { if (!_levelCounts.ContainsKey(l)) _levelCounts[l] = 0; _levelCounts[l]++; }
     private void RemoveLevelCount(int l) { if (_levelCounts.ContainsKey(l) && _levelCounts[l] > 0) _levelCounts[l]--; }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
+        Gizmos.DrawCube(_areaCenter, _areaSize);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(_areaCenter, _areaSize);
+    }
 }

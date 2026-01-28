@@ -4738,8 +4738,8 @@ MonoBehaviour:
   _maxResourceCount: 15
   _minSpacing: 1.5
   _respawnDelay: 1
-  _areaCenter: {x: 3, y: -0.5}
-  _areaSize: {x: 14, y: 8}
+  _areaCenter: {x: 2.4, y: -0.59}
+  _areaSize: {x: 9.24, y: 8.23}
 --- !u!4 &1066459637
 Transform:
   m_ObjectHideFlags: 0
