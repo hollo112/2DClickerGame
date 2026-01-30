@@ -11,6 +11,8 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField] private UpgradeSpecTableSO _specTable;
     private Dictionary<EUpgradeType, Upgrade> _upgrades = new();
 
+    private IUpgradeRepository _repository;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -20,7 +22,13 @@ public class UpgradeManager : MonoBehaviour
         }
         Instance = this;
 
+        _repository = new LocalUpgradeRepository();
         InitializeUpgrades();
+    }
+
+    private void Start()
+    {
+        Load();
     }
 
     private void InitializeUpgrades()
@@ -66,7 +74,38 @@ public class UpgradeManager : MonoBehaviour
         upgrade.TryLevelUp();
         Debug.Log($"[Upgrade] {type} 레벨 UP! Lv.{upgrade.Level}");
 
+        Save();
         OnDataChanged?.Invoke();
         return true;
+    }
+
+    private void Save()
+    {
+        var saveData = new UpgradeSaveData
+        {
+            Levels = new int[(int)EUpgradeType.Count]
+        };
+        for (int i = 0; i < (int)EUpgradeType.Count; i++)
+        {
+            var type = (EUpgradeType)i;
+            var upgrade = Get(type);
+            saveData.Levels[i] = upgrade?.Level ?? 0;
+        }
+        _repository.Save(saveData);
+    }
+
+    private void Load()
+    {
+        var saveData = _repository.Load();
+        for (int i = 0; i < (int)EUpgradeType.Count; i++)
+        {
+            if (saveData.Levels[i] > 0)
+            {
+                var type = (EUpgradeType)i;
+                var upgrade = Get(type);
+                upgrade?.SetLevel(saveData.Levels[i]);
+            }
+        }
+        OnDataChanged?.Invoke();
     }
 }
