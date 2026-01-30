@@ -209,14 +209,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1233083}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 510517e059edbc04ca13ced30db98b31, type: 3}
+  m_Script: {fileID: 11500000, guid: ac2e4d3092dc7f14286fece4cb07a5e9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AutoClickUpgradeButton
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeButton
   _button: {fileID: 1901238824}
   _nameText: {fileID: 1278311167}
   _descText: {fileID: 735933131}
   _levelText: {fileID: 1898689584}
   _costText: {fileID: 970283688}
+  _type: 2
 --- !u!1 &22313683
 GameObject:
   m_ObjectHideFlags: 0
@@ -2858,7 +2859,7 @@ GameObject:
   - component: {fileID: 648834095}
   - component: {fileID: 648834098}
   - component: {fileID: 648834097}
-  - component: {fileID: 648834096}
+  - component: {fileID: 648834099}
   m_Layer: 5
   m_Name: DamageUpgradePanel
   m_TagString: Untagged
@@ -2890,23 +2891,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 520, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &648834096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 648834094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fa0c541a524c0f4089b4cc59492740a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DamageUpgradeButton
-  _button: {fileID: 1811819209}
-  _nameText: {fileID: 894553834}
-  _descText: {fileID: 1033832736}
-  _levelText: {fileID: 723420112}
-  _costText: {fileID: 2028822296}
 --- !u!114 &648834097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2945,6 +2929,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 648834094}
   m_CullTransparentMesh: 1
+--- !u!114 &648834099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648834094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac2e4d3092dc7f14286fece4cb07a5e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeButton
+  _button: {fileID: 1811819209}
+  _nameText: {fileID: 894553834}
+  _descText: {fileID: 1033832736}
+  _levelText: {fileID: 723420112}
+  _costText: {fileID: 2028822296}
+  _type: 1
 --- !u!1 &689663630
 GameObject:
   m_ObjectHideFlags: 0
@@ -4848,11 +4850,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac2e4d3092dc7f14286fece4cb07a5e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeButton
-  _button: {fileID: 0}
-  _nameText: {fileID: 0}
-  _descText: {fileID: 0}
-  _levelText: {fileID: 0}
-  _costText: {fileID: 0}
+  _button: {fileID: 1854902334}
+  _nameText: {fileID: 125568503}
+  _descText: {fileID: 1013037601}
+  _levelText: {fileID: 2046004168}
+  _costText: {fileID: 1913264109}
   _type: 0
 --- !u!1001 &1122052058
 PrefabInstance:
@@ -5580,6 +5582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _clicker: {fileID: 867641503}
+  _resourceSpawner: {fileID: 1066459636}
   _baseClickDamage: 1
 --- !u!4 &1677622999
 Transform:

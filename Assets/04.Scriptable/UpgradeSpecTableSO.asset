@@ -14,42 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeSpecTableSO
   Datas:
   - Type: 0
-    MaxLevel: 0
-    BaseCost: 0
-    BaseDamage: 0
-    CostMultiplier: 0
-    DamageMultiplier: 0
-    Name: 
-    Description: 
+    MaxLevel: 10
+    BaseCost: 50
+    BaseValue: 0
+    CostMultiplier: 1.5
+    ValuePerLevel: 1
+    Name: "\uB3C4\uAD6C \uAC15\uD654"
+    Description: "\uB3C4\uAD6C \uB808\uBCA8 \uC5C5"
   - Type: 1
-    MaxLevel: 0
-    BaseCost: 0
-    BaseDamage: 0
-    CostMultiplier: 0
-    DamageMultiplier: 0
-    Name: 
-    Description: 
+    MaxLevel: 50
+    BaseCost: 10
+    BaseValue: 0
+    CostMultiplier: 1.3
+    ValuePerLevel: 2
+    Name: "\uB370\uBBF8\uC9C0 \uAC15\uD654"
+    Description: "\uD074\uB9AD \uB370\uBBF8\uC9C0 \uC99D\uAC00"
   - Type: 2
-    MaxLevel: 0
-    BaseCost: 0
-    BaseDamage: 0
-    CostMultiplier: 0
-    DamageMultiplier: 0
-    Name: 
-    Description: 
-  - Type: 3
-    MaxLevel: 0
-    BaseCost: 0
-    BaseDamage: 0
-    CostMultiplier: 0
-    DamageMultiplier: 0
-    Name: 
-    Description: 
-  - Type: 4
-    MaxLevel: 0
-    BaseCost: 0
-    BaseDamage: 0
-    CostMultiplier: 0
-    DamageMultiplier: 0
-    Name: 
-    Description: 
+    MaxLevel: 20
+    BaseCost: 100
+    BaseValue: 1
+    CostMultiplier: 1.8
+    ValuePerLevel: -0.04
+    Name: "\uC624\uD1A0\uD074\uB9AD"
+    Description: "Lv1: \uD65C\uC131\uD654, \uC774\uD6C4 \uAC04\uACA9 \uAC10\uC18C"

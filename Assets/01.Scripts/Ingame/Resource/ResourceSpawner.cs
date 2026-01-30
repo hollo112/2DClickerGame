@@ -25,30 +25,73 @@ public class ResourceSpawner : MonoBehaviour
 
     private void Start()
     {
+        _currentToolLevel = UpgradeManager.Instance?.Get(EUpgradeType.ToolLevel)?.Level ?? 0;
         for (int i = 0; i < _maxResourceCount; i++) SpawnResource();
+        UpgradeManager.OnDataChanged += OnUpgradeChanged;
     }
 
-    public void SetToolLevel(int level)
+    private void OnDestroy()
     {
-        if (_currentToolLevel == level) return;
-        _currentToolLevel = level;
-        RespawnAll();
+        UpgradeManager.OnDataChanged -= OnUpgradeChanged;
     }
 
-    private void RespawnAll()
+    private void OnUpgradeChanged()
+    {
+        int newLevel = UpgradeManager.Instance?.Get(EUpgradeType.ToolLevel)?.Level ?? 0;
+        if (_currentToolLevel == newLevel) return;
+        _currentToolLevel = newLevel;
+        Rebalance();
+    }
+
+    private void Rebalance()
     {
         StopAllCoroutines();
 
+        int maxIdx = _resourcePrefabs.Length - 1;
+        int min = Mathf.Max(0, _currentToolLevel - 1);
+        int max = Mathf.Min(maxIdx, _currentToolLevel + 1);
+        int validCount = max - min + 1;
+        int targetPerLevel = _maxResourceCount / validCount;
+
+        // 1. 범위 밖 리소스 제거
         for (int i = _activeResources.Count - 1; i >= 0; i--)
         {
             var resObj = _activeResources[i];
-            if (resObj != null && resObj.TryGetComponent(out Resource res))
-                res.ForceDestroy();
-        }
-        _activeResources.Clear();
-        _levelCounts.Clear();
+            if (resObj == null) { _activeResources.RemoveAt(i); continue; }
 
-        for (int i = 0; i < _maxResourceCount; i++)
+            if (resObj.TryGetComponent(out Resource res))
+            {
+                int level = res.SpawnedLevel;
+                if (level < min || level > max)
+                {
+                    _activeResources.RemoveAt(i);
+                    RemoveLevelCount(level);
+                    res.ForceDestroy();
+                }
+            }
+        }
+
+        // 2. 초과분 제거 (레벨 수가 늘어나서 기존 레벨이 과다한 경우)
+        for (int level = min; level <= max; level++)
+        {
+            _levelCounts.TryGetValue(level, out int count);
+            for (int i = _activeResources.Count - 1; i >= 0 && count > targetPerLevel; i--)
+            {
+                var resObj = _activeResources[i];
+                if (resObj == null) continue;
+                if (resObj.TryGetComponent(out Resource res) && res.SpawnedLevel == level)
+                {
+                    _activeResources.RemoveAt(i);
+                    RemoveLevelCount(level);
+                    res.ForceDestroy();
+                    count--;
+                }
+            }
+        }
+
+        // 3. 부족분 채우기
+        int toSpawn = _maxResourceCount - _activeResources.Count;
+        for (int i = 0; i < toSpawn; i++)
             SpawnResource();
     }
 

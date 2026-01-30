@@ -26,6 +26,7 @@ public class Resource : MonoBehaviour, IClickable
     private int _spawnedLevel;
 
     public int RequiredToolLevel => _requiredToolLevel;
+    public int SpawnedLevel => _spawnedLevel;
     public double CurrentHp => _currentHp;
     public double MaxHp => _maxHp;
 

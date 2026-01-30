@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Clicker : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] private double _baseClickDamage = 1;
+
     private float _autoClickInterval = 1f;
     private double _damage = 1;
     private double _autoDamage = 1;
@@ -14,16 +17,42 @@ public class Clicker : MonoBehaviour
     private bool _isAutoClickEnabled;
     private Camera _mainCamera;
 
-    // 외부에서 업그레이드 시 호출
-    public void SetAutoClickEnabled(bool value) => _isAutoClickEnabled = value;
-    public void SetAutoClickInterval(float interval) => _autoClickInterval = interval;
-    public void SetDamage(double damage) => _damage = damage;
-    public void SetAutoDamage(double damage) => _autoDamage = damage;
-    public void SetToolLevel(int level) => _toolLevel = level;
-
     private void Awake()
     {
         _mainCamera = Camera.main;
+    }
+
+    private void Start()
+    {
+        UpgradeManager.OnDataChanged += RefreshStats;
+        RefreshStats();
+    }
+
+    private void OnDestroy()
+    {
+        UpgradeManager.OnDataChanged -= RefreshStats;
+    }
+
+    private void RefreshStats()
+    {
+        if (UpgradeManager.Instance == null) return;
+        var upgrade = UpgradeManager.Instance;
+
+        // 도구 레벨
+        _toolLevel = upgrade.Get(EUpgradeType.ToolLevel)?.Level ?? 0;
+
+        // 클릭 데미지
+        double clickDamageValue = upgrade.Get(EUpgradeType.ClickDamage)?.Value ?? 0;
+        double totalDamage = _baseClickDamage + clickDamageValue;
+        _damage = totalDamage;
+        _autoDamage = totalDamage;
+
+        // 오토클릭
+        var autoClick = upgrade.Get(EUpgradeType.AutoClick);
+        int autoClickLevel = autoClick?.Level ?? 0;
+        _isAutoClickEnabled = autoClickLevel >= 1;
+        if (autoClickLevel >= 1)
+            _autoClickInterval = Mathf.Max((float)autoClick.Value, 0.1f);
     }
 
     private void Update()
