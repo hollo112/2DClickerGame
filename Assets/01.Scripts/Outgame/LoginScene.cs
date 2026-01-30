@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,11 +28,8 @@ public class LoginScene : MonoBehaviour
     [SerializeField] private TMP_InputField _passwordInputField;
     [SerializeField] private TMP_InputField _passwordConfirmInputField;
     
-    private const string LastLoginIdKey = "LastLoginId";
-    
     private void Start()
     {
-        LoadLastLoginId();
         AddButtonEvents();
         Refresh();
     }
@@ -56,98 +52,59 @@ public class LoginScene : MonoBehaviour
         _registerButton.gameObject.SetActive(_mode == SceneMode.Register);
     }
 
+    public void OnEmailTextChanged(string email)
+    {
+        var emailSpec = new AccountEmailSpecification();
+        if (!emailSpec.IsStatisfiedBy(email))
+        {
+            _messageTextUI.text = emailSpec.ErrorMessage;
+            _loginButton.enabled = false;
+            return;
+        }
+        
+        _messageTextUI.text = "완벽한 이메일입니다.";
+        _loginButton.enabled = true;
+    }
+    
     private void Login()
     {
         // 로그인
-        // 1. 아이디 입력을 확인한다.
-        string id = _idInputField.text;
-        if (string.IsNullOrEmpty(id))
-        {
-            _messageTextUI.text = "아이디를 입력해주세요.";
-            return;
-        }
-        
-        // 2. 비밀번호 입력을 확인한다.
+        string email = _idInputField.text;
         string password = _passwordInputField.text;
-        if (string.IsNullOrEmpty(password))
+        
+        var result = AccountManager.Instance.TryLogin(email, password);
+        if (result.Success)
         {
-            _messageTextUI.text = "패스워드를 입력해주세요.";
-            return;
+            GotoLogin();
         }
-        
-        // 3. 실제 저장된 아이디-비밀번호 계정이 있는지 확인한다.
-        // 3-1. 아이디가 있는지 확인한다.
-        if (!PlayerPrefs.HasKey(id))
+        else
         {
-            _messageTextUI.text = "아이디/비밀번호를 확인해주세요.";
-            return;
+            _messageTextUI.text = result.ErrorMessage;
         }
-        
-        string myPassword = PlayerPrefs.GetString(id);
-        if (myPassword != password)
-        {
-            _messageTextUI.text = "아이디/비밀번호를 확인해주세요.";
-            return;
-        }
-        
-        PlayerPrefs.SetString(LastLoginIdKey, id);
-        PlayerPrefs.Save();
-        
-        // 4. 있다면 씬 이동
-        SceneManager.LoadScene("LoadingScene");
     }
 
     private void Register()
     {
-        // 로그인
-        // 1. 아이디 입력을 확인한다.
-        string id = _idInputField.text;
-        if (string.IsNullOrEmpty(id))
-        {
-            _messageTextUI.text = "아이디를 입력해주세요.";
-            return;
-        }
-        
-        if (!IsValidEmail(id))
-        {
-            _messageTextUI.text = "이메일 형식이 아닙니다.";
-            return;
-        }
-        
-        // 2. 비밀번호 입력을 확인한다.
+        string email = _idInputField.text;
         string password = _passwordInputField.text;
-        if (string.IsNullOrEmpty(password))
-        {
-            _messageTextUI.text = "패스워드를 입력해주세요.";
-            return;
-        }
+        string password2 = _passwordInputField.text;
         
-        if (!IsValidPassword(password))
-        {
-            _messageTextUI.text =
-                "비밀번호는 7~20자이며 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.";
-            return;
-        }
-        
-        // 2. 2ck 비밀번호 입력을 확인한다.
-        string password2 = _passwordConfirmInputField.text;
         if (string.IsNullOrEmpty(password2) || password != password2)
         {
             _messageTextUI.text = "패스워드를 확인해주세요.";
             return;
         }
-        
-        // 4. 실제 저장된 아이디-비밀번호 계정이 있는지 확인한다.
-        // 4-1. 아이디가 있는지 확인한다.
-        if (PlayerPrefs.HasKey(id))
+
+        var result = AccountManager.Instance.TryRegister(email, password);
+        if (result.Success)
         {
-            _messageTextUI.text = "중복된 아이디입니다.";
-            return;
+            GotoLogin();
+        }
+        else
+        {
+            _messageTextUI.text = result.ErrorMessage;
         }
 
-        PlayerPrefs.SetString(id, password);
-
-        GotoLogin();
     }
 
     private void GotoLogin()
@@ -162,23 +119,4 @@ public class LoginScene : MonoBehaviour
         Refresh();
     }
     
-    private void LoadLastLoginId()
-    {
-        if (PlayerPrefs.HasKey(LastLoginIdKey))
-        {
-            _idInputField.text = PlayerPrefs.GetString(LastLoginIdKey);
-        }
-    }
-    
-    private bool IsValidEmail(string email)
-    {
-        string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
-        return Regex.IsMatch(email, pattern);
-    }
-
-    private bool IsValidPassword(string password)
-    {
-        string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s])[A-Za-z\d^\w\s]{7,20}$";
-        return Regex.IsMatch(password, pattern);
-    }
 }

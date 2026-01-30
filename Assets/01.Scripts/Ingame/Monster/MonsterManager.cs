@@ -18,11 +18,74 @@ public class MonsterManager : MonoBehaviour
     public event Action OnMonsterChanged;
     private const int MonstersRequiredForMerge = 3;
 
+    private int _currentToolLevel;
+    public int CurrentToolLevel => _currentToolLevel;
+
+    private IMonsterRepository _repository;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+
+        _repository = new LocalMonsterRepository();
     }
+
+    private void Start()
+    {
+        _currentToolLevel = UpgradeManager.Instance?.Get(EUpgradeType.ToolLevel)?.Level ?? 0;
+        UpgradeManager.OnDataChanged += OnUpgradeChanged;
+
+        Load();
+    }
+
+    private void OnDestroy()
+    {
+        UpgradeManager.OnDataChanged -= OnUpgradeChanged;
+    }
+
+    private void OnUpgradeChanged()
+    {
+        int newLevel = UpgradeManager.Instance?.Get(EUpgradeType.ToolLevel)?.Level ?? 0;
+        if (_currentToolLevel == newLevel) return;
+        _currentToolLevel = newLevel;
+    }
+
+    #region Save & Load
+    private void Save()
+    {
+        if (_data == null) return;
+
+        var saveData = new MonsterSaveData
+        {
+            TierCounts = new int[_data.Tiers.Length]
+        };
+        for (int i = 0; i < _data.Tiers.Length; i++)
+        {
+            saveData.TierCounts[i] = GetTierCount(i);
+        }
+        _repository.Save(saveData);
+    }
+
+    private void Load()
+    {
+        var saveData = _repository.Load();
+        if (saveData.TierCounts == null || saveData.TierCounts.Length == 0) return;
+
+        int tierCount = Mathf.Min(saveData.TierCounts.Length, _data.Tiers.Length);
+        for (int tier = 0; tier < tierCount; tier++)
+        {
+            for (int i = 0; i < saveData.TierCounts[tier]; i++)
+            {
+                Vector2? pos = FindValidSpawnPosition();
+                if (pos != null)
+                {
+                    CreateMonster(tier, pos.Value);
+                }
+            }
+        }
+    }
+    #endregion
 
     #region Spawn & Merge Logic
     public bool CanSpawn() => _data != null && CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, _data.SpawnCost) && GetTierCount(0) < _data.MaxMonstersPerTier;
@@ -34,7 +97,9 @@ public class MonsterManager : MonoBehaviour
         if (spawnPos == null) return false;
 
         CurrencyManager.Instance.Spend(ECurrencyType.Gold, _data.SpawnCost);
-        return CreateMonster(0, spawnPos.Value);
+        bool success = CreateMonster(0, spawnPos.Value);
+        if (success) Save();
+        return success;
     }
 
     public bool CanMerge()
@@ -73,7 +138,11 @@ public class MonsterManager : MonoBehaviour
         foreach (var m in targets) { _monsters.Remove(m); m.OnMerged(); }
 
         bool success = CreateMonster(targetTier + 1, mergePos);
-        if (success) OnMonsterChanged?.Invoke();
+        if (success)
+        {
+            Save();
+            OnMonsterChanged?.Invoke();
+        }
         return success;
     }
 
@@ -104,7 +173,7 @@ public class MonsterManager : MonoBehaviour
 
             // 2. 초기화 진행
             monster.Initialize(this, tier, _data.Tiers[tier]);
-        
+
             OnMonsterChanged?.Invoke(); // UI 갱신 알림
             return true;
         }
@@ -114,7 +183,11 @@ public class MonsterManager : MonoBehaviour
 
     public void RemoveMonster(Monster monster)
     {
-        if (_monsters.Remove(monster)) OnMonsterChanged?.Invoke();
+        if (_monsters.Remove(monster))
+        {
+            Save();
+            OnMonsterChanged?.Invoke();
+        }
     }
 
     public int GetTierCount(int tier)
