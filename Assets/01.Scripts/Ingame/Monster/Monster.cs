@@ -106,11 +106,11 @@ public class Monster : MonoBehaviour
 
     private void HandleIdle()
     {
-        _targetResource = _manager.FindRandomResource(UpgradeManager.Instance?.ToolLevel ?? 0);
+        _targetResource = _manager.FindRandomResource(0);
         if (_targetResource != null)
         {
             _movement.SetTarget(_targetResource.transform);
-            _attack.SetAttackableLevel(UpgradeManager.Instance?.ToolLevel ?? 0);
+            _attack.SetAttackableLevel(0);
             ChangeState(State.Moving);
         }
     }

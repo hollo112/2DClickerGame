@@ -15,7 +15,7 @@ public abstract class UpgradeButtonBase : MonoBehaviour
     {
         _button.onClick.AddListener(OnClick);
         CurrencyManager.Instance.OnCurrencyChanged += OnCurrencyChanged;
-        UpgradeManager.Instance.OnUpgraded += OnUpgraded;
+        UpgradeManager.OnDataChanged += OnDataChanged;
         Refresh();
     }
 
@@ -23,12 +23,11 @@ public abstract class UpgradeButtonBase : MonoBehaviour
     {
         if (CurrencyManager.Instance != null)
             CurrencyManager.Instance.OnCurrencyChanged -= OnCurrencyChanged;
-        if (UpgradeManager.Instance != null)
-            UpgradeManager.Instance.OnUpgraded -= OnUpgraded;
+        UpgradeManager.OnDataChanged -= OnDataChanged;
     }
 
-    private void OnCurrencyChanged(ECurrencyType type, double amount) => Refresh();
-    private void OnUpgraded(UpgradeType type, int level) => Refresh();
+    private void OnCurrencyChanged(ECurrencyType type, Currency amount) => Refresh();
+    private void OnDataChanged() => Refresh();
 
     private void OnClick()
     {

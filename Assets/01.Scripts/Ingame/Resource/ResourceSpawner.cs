@@ -23,32 +23,7 @@ public class ResourceSpawner : MonoBehaviour
 
     private void Start()
     {
-        UpgradeManager.Instance.OnUpgraded += OnUpgraded;
         for (int i = 0; i < _maxResourceCount; i++) SpawnResource();
-    }
-
-    private void OnUpgraded(UpgradeType type, int level) { if (type == UpgradeType.Tool) RemoveOutOfRangeResources(); }
-
-    private void RemoveOutOfRangeResources()
-    {
-        int toolLevel = UpgradeManager.Instance?.ToolLevel ?? 0;
-        int minLevel = Mathf.Max(0, toolLevel - 1);
-        int maxLevel = toolLevel + 1;
-
-        for (int i = _activeResources.Count - 1; i >= 0; i--)
-        {
-            if (_activeResources[i].TryGetComponent(out Resource res))
-            {
-                if (res.RequiredToolLevel < minLevel || res.RequiredToolLevel > maxLevel)
-                {
-                    GameObject obj = _activeResources[i];
-                    _activeResources.RemoveAt(i);
-                    RemoveLevelCount(res.RequiredToolLevel);
-                    res.ForceDestroy();
-                }
-            }
-        }
-        while (_activeResources.Count < _maxResourceCount) SpawnResource();
     }
 
     public void SpawnResource()
@@ -59,7 +34,7 @@ public class ResourceSpawner : MonoBehaviour
 
         int index = GetBalancedLevelIndex();
         GameObject resObj = Instantiate(_resourcePrefabs[index], spawnPos.Value, Quaternion.identity, transform);
-        
+
         _activeResources.Add(resObj);
         AddLevelCount(index);
         if (resObj.TryGetComponent(out Resource res)) res.Initialize(this, index);
@@ -99,21 +74,14 @@ public class ResourceSpawner : MonoBehaviour
 
     private int GetBalancedLevelIndex()
     {
-        int toolLevel = UpgradeManager.Instance?.ToolLevel ?? 0;
         int maxIdx = _resourcePrefabs.Length - 1;
 
-        // 소환 가능한 후보군 설정: [레벨-1, 레벨, 레벨+1]
-        int[] candidates = {
-            Mathf.Clamp(toolLevel - 1, 0, maxIdx),
-            Mathf.Clamp(toolLevel, 0, maxIdx),
-            Mathf.Clamp(toolLevel + 1, 0, maxIdx)
-        };
+        int[] candidates = new int[maxIdx + 1];
+        for (int i = 0; i <= maxIdx; i++)
+            candidates[i] = i;
 
-        // 중복 제거된 후보 레벨들 (도구 레벨이 0일 경우 0, 1만 남음)
         var distinctLevels = candidates.Distinct().ToList();
 
-        // 1. 각 레벨이 목표치(총량의 1/3)에 도달했는지 확인
-        // 목표치보다 현재 개수가 적은 레벨들만 따로 선별
         int targetCountPerLevel = _maxResourceCount / distinctLevels.Count;
 
         List<int> underPopulatedLevels = new List<int>();
@@ -127,13 +95,11 @@ public class ResourceSpawner : MonoBehaviour
             }
         }
 
-        // 2. 만약 목표치보다 적은 레벨이 있다면 그 중에서 랜덤 선택 (부족한 곳 채우기)
         if (underPopulatedLevels.Count > 0)
         {
             return underPopulatedLevels[Random.Range(0, underPopulatedLevels.Count)];
         }
 
-        // 3. 모든 레벨이 균등하게 찼다면 전체 후보 중 완전 랜덤 선택
         return candidates[Random.Range(0, candidates.Length)];
     }
 

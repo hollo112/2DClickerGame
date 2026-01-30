@@ -17,14 +17,14 @@ public class UI_Currency : MonoBehaviour
             CurrencyManager.Instance.OnCurrencyChanged -= OnCurrencyChanged;
     }
 
-    private void OnCurrencyChanged(ECurrencyType type, double amount)
+    private void OnCurrencyChanged(ECurrencyType type, Currency amount)
     {
         if (type == ECurrencyType.Gold)
             UpdateMoneyText(amount);
     }
 
-    private void UpdateMoneyText(double money)
+    private void UpdateMoneyText(Currency money)
     {
-        _moneyText.text = $"{money.ToFormattedString()}";
+        _moneyText.text = money.ToString();
     }
 }

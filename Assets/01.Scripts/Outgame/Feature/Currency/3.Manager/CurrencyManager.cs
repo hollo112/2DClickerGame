@@ -7,9 +7,9 @@ public class CurrencyManager : MonoBehaviour
 
     [SerializeField] private double _startingMoney = 0;
 
-    private double[] _currency = new double[(int)ECurrencyType.Count];
+    private Currency[] _currency = new Currency[(int)ECurrencyType.Count];
 
-    public event Action<ECurrencyType, double> OnCurrencyChanged;
+    public event Action<ECurrencyType, Currency> OnCurrencyChanged;
 
     private ICurrencyRepository _repository;
 
@@ -22,7 +22,7 @@ public class CurrencyManager : MonoBehaviour
         }
         Instance = this;
 
-        _currency[(int)ECurrencyType.Gold] = _startingMoney;
+        _currency[(int)ECurrencyType.Gold] = new Currency(_startingMoney);
         _repository = new LocalCurrencyRepository();
     }
 
@@ -31,12 +31,12 @@ public class CurrencyManager : MonoBehaviour
         Load();
     }
 
-    public double Get(ECurrencyType type)
+    public Currency Get(ECurrencyType type)
     {
         return _currency[(int)type];
     }
 
-    public void Add(ECurrencyType type, double amount)
+    public void Add(ECurrencyType type, Currency amount)
     {
         if (amount <= 0) return;
 
@@ -49,7 +49,7 @@ public class CurrencyManager : MonoBehaviour
         Debug.Log($"[Currency] {type} +{amount} | 현재: {_currency[(int)type]}");
     }
 
-    public bool Spend(ECurrencyType type, double amount)
+    public bool Spend(ECurrencyType type, Currency amount)
     {
         if (amount <= 0 || _currency[(int)type] < amount)
             return false;
@@ -64,14 +64,21 @@ public class CurrencyManager : MonoBehaviour
         return true;
     }
 
-    public bool CanAfford(ECurrencyType type, double amount)
+    public bool CanAfford(ECurrencyType type, Currency amount)
     {
         return _currency[(int)type] >= amount;
     }
 
     private void Save()
     {
-        var saveData = new CurrencySaveData { Currencies = _currency };
+        var saveData = new CurrencySaveData
+        {
+            Currencies = new double[(int)ECurrencyType.Count]
+        };
+        for (int i = 0; i < (int)ECurrencyType.Count; i++)
+        {
+            saveData.Currencies[i] = _currency[i].Value;
+        }
         _repository.Save(saveData);
     }
 
@@ -82,7 +89,7 @@ public class CurrencyManager : MonoBehaviour
         {
             if (saveData.Currencies[i] > 0)
             {
-                _currency[i] = saveData.Currencies[i];
+                _currency[i] = new Currency(saveData.Currencies[i]);
                 OnCurrencyChanged?.Invoke((ECurrencyType)i, _currency[i]);
             }
         }

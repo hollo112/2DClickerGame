@@ -22,8 +22,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // 매니저들 초기화 후 Clicker에 초기값 반영
+        UpgradeManager.OnDataChanged += RefreshClickerStats;
         RefreshClickerStats();
+    }
+
+    private void OnDestroy()
+    {
+        UpgradeManager.OnDataChanged -= RefreshClickerStats;
     }
 
     /// 업그레이드 변경 시 Clicker에 반영
@@ -33,9 +38,24 @@ public class GameManager : MonoBehaviour
 
         var upgrade = UpgradeManager.Instance;
 
-        _clicker.SetToolLevel(upgrade.ToolLevel);
-        _clicker.SetDamage(_baseClickDamage + upgrade.BonusDamage);
-        _clicker.SetAutoClickEnabled(upgrade.IsAutoClickUnlocked);
-        _clicker.SetAutoClickInterval(upgrade.AutoClickInterval);
+        // 도구 레벨
+        var toolUpgrade = upgrade.Get(EUpgradeType.ToolLevel);
+        _clicker.SetToolLevel(toolUpgrade?.Level ?? 0);
+
+        // 클릭 데미지
+        double clickDamageValue = upgrade.Get(EUpgradeType.ClickDamage)?.Value ?? 0;
+        double totalDamage = _baseClickDamage + clickDamageValue;
+        _clicker.SetDamage(totalDamage);
+        _clicker.SetAutoDamage(totalDamage);
+
+        // 오토클릭
+        var autoClickUpgrade = upgrade.Get(EUpgradeType.AutoClick);
+        int autoClickLevel = autoClickUpgrade?.Level ?? 0;
+        _clicker.SetAutoClickEnabled(autoClickLevel >= 1);
+        if (autoClickLevel >= 1)
+        {
+            float interval = (float)(autoClickUpgrade.Value);
+            _clicker.SetAutoClickInterval(Mathf.Max(interval, 0.1f));
+        }
     }
 }

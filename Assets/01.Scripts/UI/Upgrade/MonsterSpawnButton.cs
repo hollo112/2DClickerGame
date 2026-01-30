@@ -12,7 +12,6 @@ public class MonsterSpawnButton : UpgradeButtonBase
 
     private void Update()
     {
-        // MonsterManager가 늦게 초기화될 경우를 대비
         if (!_subscribedToMonsterManager)
         {
             TrySubscribeToMonsterManager();
@@ -46,13 +45,13 @@ public class MonsterSpawnButton : UpgradeButtonBase
 
     protected override void UpdateDisplay()
     {
-        double cost = GetCurrentCost();
+        Currency cost = GetCurrentCost();
 
         SetDisplay(
             "몬스터 소환",
             "1단계 몬스터 소환",
             "",
-            cost >= 0 ? $"{cost.ToFormattedString()}" : "-"
+            cost >= 0 ? cost.ToString() : "-"
         );
     }
 

@@ -12,7 +12,6 @@ public class MonsterMergeButton : UpgradeButtonBase
 
     private void Update()
     {
-        // MonsterManager가 늦게 초기화될 경우를 대비
         if (!_subscribedToMonsterManager)
         {
             TrySubscribeToMonsterManager();
@@ -46,7 +45,7 @@ public class MonsterMergeButton : UpgradeButtonBase
 
     protected override void UpdateDisplay()
     {
-        double cost = GetCurrentCost();
+        Currency cost = GetCurrentCost();
         int tier = MonsterManager.Instance != null ? MonsterManager.Instance.GetMergeableTier() : -1;
         string tierText = tier >= 0 ? $"\n      {tier + 1}에서 {tier + 2}단계" : "";
 
@@ -54,7 +53,7 @@ public class MonsterMergeButton : UpgradeButtonBase
             "몬스터 머지",
             $"같은 단계 3마리 합성{tierText}",
             "",
-            cost >= 0 ? $"{cost.ToFormattedString()}" : "-"
+            cost >= 0 ? cost.ToString() : "-"
         );
     }
 
@@ -77,7 +76,6 @@ public class MonsterMergeButton : UpgradeButtonBase
             return;
         }
 
-        // 머지 가능 조건: 비용 충족 && 같은 단계 3마리 이상 && 5단계 미만
         _button.interactable = MonsterManager.Instance.CanMerge();
     }
 }

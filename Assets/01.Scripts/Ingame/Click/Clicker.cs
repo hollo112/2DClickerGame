@@ -4,6 +4,7 @@ public class Clicker : MonoBehaviour
 {
     private float _autoClickInterval = 1f;
     private double _damage = 1;
+    private double _autoDamage = 1;
     private int _toolLevel = 0;
 
     private IClickable _currentTarget;
@@ -17,6 +18,7 @@ public class Clicker : MonoBehaviour
     public void SetAutoClickEnabled(bool value) => _isAutoClickEnabled = value;
     public void SetAutoClickInterval(float interval) => _autoClickInterval = interval;
     public void SetDamage(double damage) => _damage = damage;
+    public void SetAutoDamage(double damage) => _autoDamage = damage;
     public void SetToolLevel(int level) => _toolLevel = level;
 
     private void Awake()
@@ -77,7 +79,7 @@ public class Clicker : MonoBehaviour
     {
         return new ClickInfo(
             worldPosition: worldPos,
-            damage: _damage,
+            damage: isAutoClick ? _autoDamage : _damage,
             toolLevel: _toolLevel,
             isAutoClick: isAutoClick
         );

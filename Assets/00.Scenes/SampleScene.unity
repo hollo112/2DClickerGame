@@ -4766,7 +4766,7 @@ GameObject:
   - component: {fileID: 1114948649}
   - component: {fileID: 1114948652}
   - component: {fileID: 1114948651}
-  - component: {fileID: 1114948650}
+  - component: {fileID: 1114948653}
   m_Layer: 5
   m_Name: ToolUpgradePanel
   m_TagString: Untagged
@@ -4798,23 +4798,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 520, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1114948650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1114948648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7400f267a0ba4784cac72c2d26e04b32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ToolUpgradeButton
-  _button: {fileID: 1854902334}
-  _nameText: {fileID: 125568503}
-  _descText: {fileID: 1013037601}
-  _levelText: {fileID: 2046004168}
-  _costText: {fileID: 1913264109}
 --- !u!114 &1114948651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4853,6 +4836,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114948648}
   m_CullTransparentMesh: 1
+--- !u!114 &1114948653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114948648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac2e4d3092dc7f14286fece4cb07a5e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeButton
+  _button: {fileID: 0}
+  _nameText: {fileID: 0}
+  _descText: {fileID: 0}
+  _levelText: {fileID: 0}
+  _costText: {fileID: 0}
+  _type: 0
 --- !u!1001 &1122052058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6589,7 +6590,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1998172194}
-  - component: {fileID: 1998172193}
+  - component: {fileID: 1998172195}
   m_Layer: 0
   m_Name: UpgradeManager
   m_TagString: Untagged
@@ -6597,19 +6598,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1998172193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1998172192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59e5d31fb6444a446bb275bd67b9c8ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
-  _data: {fileID: 11400000, guid: 2d748c5a02a1c04438b064976cd5ae0b, type: 2}
 --- !u!4 &1998172194
 Transform:
   m_ObjectHideFlags: 0
@@ -6625,6 +6613,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1998172195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998172192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8986b260cc73804583ceea451eeb9d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
+  _specTable: {fileID: 11400000, guid: fc88d813faf079e468f86deb82df23be, type: 2}
 --- !u!1 &2028822294
 GameObject:
   m_ObjectHideFlags: 0
