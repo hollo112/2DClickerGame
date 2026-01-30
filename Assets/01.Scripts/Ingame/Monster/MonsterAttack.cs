@@ -1,9 +1,6 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// 몬스터의 공격 로직을 담당 (SRP)
-/// </summary>
 public class MonsterAttack : MonoBehaviour
 {
     private double _damage;
@@ -34,10 +31,7 @@ public class MonsterAttack : MonoBehaviour
         _attackTimer = 0f;
     }
 
-    /// <summary>
     /// 공격 시도. 타이머가 차면 공격 실행.
-    /// </summary>
-    /// <returns>타겟이 파괴되었으면 true</returns>
     public bool TryAttack(Resource target)
     {
         if (target == null) return true;
