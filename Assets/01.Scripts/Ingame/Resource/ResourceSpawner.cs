@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -16,6 +17,7 @@ public class ResourceSpawner : MonoBehaviour
 
     private List<GameObject> _activeResources = new List<GameObject>();
     private Dictionary<int, int> _levelCounts = new Dictionary<int, int>();
+    private int _currentToolLevel;
 
     public Vector2 AreaCenter => _areaCenter;
     public Vector2 AreaSize => _areaSize;
@@ -24,6 +26,30 @@ public class ResourceSpawner : MonoBehaviour
     private void Start()
     {
         for (int i = 0; i < _maxResourceCount; i++) SpawnResource();
+    }
+
+    public void SetToolLevel(int level)
+    {
+        if (_currentToolLevel == level) return;
+        _currentToolLevel = level;
+        RespawnAll();
+    }
+
+    private void RespawnAll()
+    {
+        StopAllCoroutines();
+
+        for (int i = _activeResources.Count - 1; i >= 0; i--)
+        {
+            var resObj = _activeResources[i];
+            if (resObj != null && resObj.TryGetComponent(out Resource res))
+                res.ForceDestroy();
+        }
+        _activeResources.Clear();
+        _levelCounts.Clear();
+
+        for (int i = 0; i < _maxResourceCount; i++)
+            SpawnResource();
     }
 
     public void SpawnResource()
@@ -66,7 +92,7 @@ public class ResourceSpawner : MonoBehaviour
         StartCoroutine(RespawnRoutine());
     }
 
-    private System.Collections.IEnumerator RespawnRoutine()
+    private IEnumerator RespawnRoutine()
     {
         yield return new WaitForSeconds(_respawnDelay);
         SpawnResource();
@@ -75,32 +101,27 @@ public class ResourceSpawner : MonoBehaviour
     private int GetBalancedLevelIndex()
     {
         int maxIdx = _resourcePrefabs.Length - 1;
+        int min = Mathf.Max(0, _currentToolLevel - 1);
+        int max = Mathf.Min(maxIdx, _currentToolLevel + 1);
 
-        int[] candidates = new int[maxIdx + 1];
-        for (int i = 0; i <= maxIdx; i++)
-            candidates[i] = i;
+        List<int> validLevels = new List<int>();
+        for (int i = min; i <= max; i++)
+            validLevels.Add(i);
 
-        var distinctLevels = candidates.Distinct().ToList();
+        int targetPerLevel = _maxResourceCount / validLevels.Count;
 
-        int targetCountPerLevel = _maxResourceCount / distinctLevels.Count;
-
-        List<int> underPopulatedLevels = new List<int>();
-
-        foreach (int level in distinctLevels)
+        List<int> underPopulated = new List<int>();
+        foreach (int level in validLevels)
         {
-            _levelCounts.TryGetValue(level, out int currentCount);
-            if (currentCount < targetCountPerLevel)
-            {
-                underPopulatedLevels.Add(level);
-            }
+            _levelCounts.TryGetValue(level, out int count);
+            if (count < targetPerLevel)
+                underPopulated.Add(level);
         }
 
-        if (underPopulatedLevels.Count > 0)
-        {
-            return underPopulatedLevels[Random.Range(0, underPopulatedLevels.Count)];
-        }
+        if (underPopulated.Count > 0)
+            return underPopulated[Random.Range(0, underPopulated.Count)];
 
-        return candidates[Random.Range(0, candidates.Length)];
+        return validLevels[Random.Range(0, validLevels.Count)];
     }
 
     private void AddLevelCount(int l) { if (!_levelCounts.ContainsKey(l)) _levelCounts[l] = 0; _levelCounts[l]++; }

@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Clicker _clicker;
+    [SerializeField] private ResourceSpawner _resourceSpawner;
 
     [Header("Settings")]
     [SerializeField] private double _baseClickDamage = 1;  // 기본 클릭 데미지
@@ -40,7 +41,10 @@ public class GameManager : MonoBehaviour
 
         // 도구 레벨
         var toolUpgrade = upgrade.Get(EUpgradeType.ToolLevel);
-        _clicker.SetToolLevel(toolUpgrade?.Level ?? 0);
+        int toolLevel = toolUpgrade?.Level ?? 0;
+        _clicker.SetToolLevel(toolLevel);
+        if (_resourceSpawner != null)
+            _resourceSpawner.SetToolLevel(toolLevel);
 
         // 클릭 데미지
         double clickDamageValue = upgrade.Get(EUpgradeType.ClickDamage)?.Value ?? 0;
