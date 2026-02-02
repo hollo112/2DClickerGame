@@ -28,7 +28,7 @@ public class MonsterManager : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
-        _repository = new LocalMonsterRepository();
+        _repository = new LocalMonsterRepository(AccountManager.Instance.Email);
     }
 
     private void Start()

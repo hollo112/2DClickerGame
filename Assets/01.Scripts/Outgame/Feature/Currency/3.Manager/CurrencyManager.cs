@@ -23,7 +23,7 @@ public class CurrencyManager : MonoBehaviour
         Instance = this;
 
         _currency[(int)ECurrencyType.Gold] = new Currency(_startingMoney);
-        _repository = new LocalCurrencyRepository();
+        _repository = new LocalCurrencyRepository(AccountManager.Instance.Email);
     }
 
     private void Start()

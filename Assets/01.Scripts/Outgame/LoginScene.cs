@@ -75,7 +75,7 @@ public class LoginScene : MonoBehaviour
         var result = AccountManager.Instance.TryLogin(email, password);
         if (result.Success)
         {
-            GotoLogin();
+            SceneManager.LoadScene("GameScene");
         }
         else
         {

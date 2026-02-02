@@ -1,6 +1,7 @@
 public interface IAccountRepository
 {
-    void Save(AccountSaveData saveData);
-    AccountSaveData Load(string email);
-    bool Exists(string email);
+    bool IsEmailAvailable(string email);
+    AuthResult Register(string email, string password);
+    AuthResult Login(string email, string password);
+    void Logout();
 }

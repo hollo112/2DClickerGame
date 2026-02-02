@@ -3,13 +3,19 @@ using UnityEngine;
 public class LocalUpgradeRepository : IUpgradeRepository
 {
     private const string SaveKey = "Upgrade_";
+    private readonly string _userId;
+
+    public LocalUpgradeRepository(string userId)
+    {
+        _userId = userId;
+    }
 
     public void Save(UpgradeSaveData saveData)
     {
         for (int i = 0; i < (int)EUpgradeType.Count; i++)
         {
             var type = (EUpgradeType)i;
-            PlayerPrefs.SetInt(SaveKey + type.ToString(), saveData.Levels[i]);
+            PlayerPrefs.SetInt(_userId + SaveKey + type.ToString(), saveData.Levels[i]);
         }
         PlayerPrefs.Save();
     }
@@ -24,7 +30,7 @@ public class LocalUpgradeRepository : IUpgradeRepository
         for (int i = 0; i < (int)EUpgradeType.Count; i++)
         {
             var type = (EUpgradeType)i;
-            string key = SaveKey + type.ToString();
+            string key = _userId + SaveKey + type.ToString();
             if (PlayerPrefs.HasKey(key))
             {
                 data.Levels[i] = PlayerPrefs.GetInt(key, 0);
