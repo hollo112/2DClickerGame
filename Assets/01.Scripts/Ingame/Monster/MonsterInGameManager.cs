@@ -118,21 +118,6 @@ public class MonsterInGameManager : MonoBehaviour
         Destroy(obj);
         return false;
     }
-
-    public void RemoveMonster(Monster monster)
-    {
-        if (_monsters.Remove(monster))
-        {
-            MonsterOutgameManager.Instance?.NotifyMonsterRemoved(monster.Tier);
-            OnMonsterChanged?.Invoke();
-        }
-    }
-
-    public int GetTierCount(int tier)
-    {
-        _monsters.RemoveAll(m => m == null);
-        return _monsters.Count(m => m.Tier == tier);
-    }
     #endregion
 
     #region Position Validation
