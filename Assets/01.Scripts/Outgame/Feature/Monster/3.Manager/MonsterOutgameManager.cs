@@ -27,10 +27,6 @@ public class MonsterOutgameManager : MonoBehaviour
 
         _repository = new LocalMonsterRepository(AccountManager.Instance.Email);
         _collection = new MonsterCollection(_data.Tiers.Length, _data.MaxMonstersPerTier, MonstersRequiredForMerge);
-    }
-
-    private void Start()
-    {
         Load();
     }
 
