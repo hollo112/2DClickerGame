@@ -28,7 +28,7 @@ public class MonsterMergeButton : UpgradeButtonBase
         }
         if (!_subscribedToOutGame)
         {
-            MonsterManager.OnDataChanged += Refresh;
+            MonsterOutgameManager.OnDataChanged += Refresh;
             _subscribedToOutGame = true;
         }
         if (_subscribedToInGame && _subscribedToOutGame) Refresh();
@@ -43,7 +43,7 @@ public class MonsterMergeButton : UpgradeButtonBase
         }
         if (_subscribedToOutGame)
         {
-            MonsterManager.OnDataChanged -= Refresh;
+            MonsterOutgameManager.OnDataChanged -= Refresh;
         }
     }
 
@@ -56,7 +56,7 @@ public class MonsterMergeButton : UpgradeButtonBase
     protected override void UpdateDisplay()
     {
         Currency cost = GetCurrentCost();
-        int tier = MonsterManager.Instance != null ? MonsterManager.Instance.GetMergeableTier() : -1;
+        int tier = MonsterOutgameManager.Instance != null ? MonsterOutgameManager.Instance.GetMergeableTier() : -1;
         string tierText = tier >= 0 ? $"\n      {tier + 1}에서 {tier + 2}단계" : "";
 
         SetDisplay(
@@ -69,22 +69,22 @@ public class MonsterMergeButton : UpgradeButtonBase
 
     protected override double GetCurrentCost()
     {
-        if (MonsterManager.Instance == null) return -1;
+        if (MonsterOutgameManager.Instance == null) return -1;
 
-        int tier = MonsterManager.Instance.GetMergeableTier();
+        int tier = MonsterOutgameManager.Instance.GetMergeableTier();
         if (tier < 0) return -1;
 
-        return MonsterManager.Instance.GetMergeCost(tier);
+        return MonsterOutgameManager.Instance.GetMergeCost(tier);
     }
 
     protected override void UpdateInteractable()
     {
-        if (MonsterManager.Instance == null)
+        if (MonsterOutgameManager.Instance == null)
         {
             _button.interactable = false;
             return;
         }
 
-        _button.interactable = MonsterManager.Instance.CanMerge();
+        _button.interactable = MonsterOutgameManager.Instance.CanMerge();
     }
 }

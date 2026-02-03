@@ -50,8 +50,8 @@ public class MonsterInGameManager : MonoBehaviour
     #region Spawn & Merge
     public bool TrySpawnMonster()
     {
-        if (MonsterManager.Instance == null) return false;
-        if (!MonsterManager.Instance.TrySpawn()) return false;
+        if (MonsterOutgameManager.Instance == null) return false;
+        if (!MonsterOutgameManager.Instance.TrySpawn()) return false;
 
         Vector2? spawnPos = FindValidSpawnPosition();
         if (spawnPos == null) return false;
@@ -62,8 +62,8 @@ public class MonsterInGameManager : MonoBehaviour
 
     public bool TryMerge()
     {
-        if (MonsterManager.Instance == null) return false;
-        if (!MonsterManager.Instance.TryMerge(out int sourceTier)) return false;
+        if (MonsterOutgameManager.Instance == null) return false;
+        if (!MonsterOutgameManager.Instance.TryMerge(out int sourceTier)) return false;
 
         var targets = _monsters.Where(m => m != null && m.Tier == sourceTier).Take(MonstersRequiredForMerge).ToList();
         if (targets.Count < MonstersRequiredForMerge) return false;
@@ -83,11 +83,11 @@ public class MonsterInGameManager : MonoBehaviour
     #region Load
     private void LoadMonsters()
     {
-        if (MonsterManager.Instance == null || _data == null) return;
+        if (MonsterOutgameManager.Instance == null || _data == null) return;
 
         for (int tier = 0; tier < _data.Tiers.Length; tier++)
         {
-            int count = MonsterManager.Instance.GetTierCount(tier);
+            int count = MonsterOutgameManager.Instance.GetTierCount(tier);
             for (int i = 0; i < count; i++)
             {
                 Vector2? pos = FindValidSpawnPosition();
@@ -123,7 +123,7 @@ public class MonsterInGameManager : MonoBehaviour
     {
         if (_monsters.Remove(monster))
         {
-            MonsterManager.Instance?.NotifyMonsterRemoved(monster.Tier);
+            MonsterOutgameManager.Instance?.NotifyMonsterRemoved(monster.Tier);
             OnMonsterChanged?.Invoke();
         }
     }

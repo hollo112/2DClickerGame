@@ -28,7 +28,7 @@ public class MonsterSpawnButton : UpgradeButtonBase
         }
         if (!_subscribedToOutGame)
         {
-            MonsterManager.OnDataChanged += Refresh;
+            MonsterOutgameManager.OnDataChanged += Refresh;
             _subscribedToOutGame = true;
         }
         if (_subscribedToInGame && _subscribedToOutGame) Refresh();
@@ -43,7 +43,7 @@ public class MonsterSpawnButton : UpgradeButtonBase
         }
         if (_subscribedToOutGame)
         {
-            MonsterManager.OnDataChanged -= Refresh;
+            MonsterOutgameManager.OnDataChanged -= Refresh;
         }
     }
 
@@ -67,18 +67,18 @@ public class MonsterSpawnButton : UpgradeButtonBase
 
     protected override double GetCurrentCost()
     {
-        if (MonsterManager.Instance == null) return -1;
-        return MonsterManager.Instance.SpawnCost;
+        if (MonsterOutgameManager.Instance == null) return -1;
+        return MonsterOutgameManager.Instance.SpawnCost;
     }
 
     protected override void UpdateInteractable()
     {
-        if (MonsterManager.Instance == null)
+        if (MonsterOutgameManager.Instance == null)
         {
             _button.interactable = false;
             return;
         }
 
-        _button.interactable = MonsterManager.Instance.CanSpawn();
+        _button.interactable = MonsterOutgameManager.Instance.CanSpawn();
     }
 }

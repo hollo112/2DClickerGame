@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "66031284172",
+    "project_id": "village-clicker-3c402",
+    "storage_bucket": "village-clicker-3c402.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:66031284172:android:ca3b3f11217daf5e343769",
+        "android_client_info": {
+          "package_name": "com.yj.village_clicker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1dAZo-F016aSVwcP5gzS2QJtj-6HZ8-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
