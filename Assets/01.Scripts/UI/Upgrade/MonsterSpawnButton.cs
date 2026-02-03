@@ -2,45 +2,55 @@ using UnityEngine;
 
 public class MonsterSpawnButton : UpgradeButtonBase
 {
-    private bool _subscribedToMonsterManager;
+    private bool _subscribedToInGame;
+    private bool _subscribedToOutGame;
 
     protected override void Start()
     {
         base.Start();
-        TrySubscribeToMonsterManager();
+        TrySubscribe();
     }
 
     private void Update()
     {
-        if (!_subscribedToMonsterManager)
+        if (!_subscribedToInGame || !_subscribedToOutGame)
         {
-            TrySubscribeToMonsterManager();
+            TrySubscribe();
         }
     }
 
-    private void TrySubscribeToMonsterManager()
+    private void TrySubscribe()
     {
-        if (MonsterManager.Instance != null && !_subscribedToMonsterManager)
+        if (MonsterInGameManager.Instance != null && !_subscribedToInGame)
         {
-            MonsterManager.Instance.OnMonsterChanged += Refresh;
-            _subscribedToMonsterManager = true;
-            Refresh();
+            MonsterInGameManager.Instance.OnMonsterChanged += Refresh;
+            _subscribedToInGame = true;
         }
+        if (!_subscribedToOutGame)
+        {
+            MonsterManager.OnDataChanged += Refresh;
+            _subscribedToOutGame = true;
+        }
+        if (_subscribedToInGame && _subscribedToOutGame) Refresh();
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        if (MonsterManager.Instance != null && _subscribedToMonsterManager)
+        if (MonsterInGameManager.Instance != null && _subscribedToInGame)
         {
-            MonsterManager.Instance.OnMonsterChanged -= Refresh;
+            MonsterInGameManager.Instance.OnMonsterChanged -= Refresh;
+        }
+        if (_subscribedToOutGame)
+        {
+            MonsterManager.OnDataChanged -= Refresh;
         }
     }
 
     protected override bool TryUpgrade()
     {
-        if (MonsterManager.Instance == null) return false;
-        return MonsterManager.Instance.TrySpawnMonster();
+        if (MonsterInGameManager.Instance == null) return false;
+        return MonsterInGameManager.Instance.TrySpawnMonster();
     }
 
     protected override void UpdateDisplay()
@@ -57,9 +67,8 @@ public class MonsterSpawnButton : UpgradeButtonBase
 
     protected override double GetCurrentCost()
     {
-        if (MonsterManager.Instance == null || MonsterManager.Instance.Data == null)
-            return -1;
-        return MonsterManager.Instance.Data.SpawnCost;
+        if (MonsterManager.Instance == null) return -1;
+        return MonsterManager.Instance.SpawnCost;
     }
 
     protected override void UpdateInteractable()

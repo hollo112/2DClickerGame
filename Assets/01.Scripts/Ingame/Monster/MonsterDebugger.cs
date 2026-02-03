@@ -14,14 +14,14 @@ public class MonsterDebugger : MonoBehaviour
 
     private void PrintMonsterStatus()
     {
-        if (MonsterManager.Instance == null)
+        if (MonsterInGameManager.Instance == null)
         {
-            Debug.LogError("[Debugger] MonsterManager 인스턴스를 찾을 수 없습니다.");
+            Debug.LogError("[Debugger] InGameMonsterManager 인스턴스를 찾을 수 없습니다.");
             return;
         }
 
-        var monsters = MonsterManager.Instance.Monsters;
-        var data = MonsterManager.Instance.Data;
+        var monsters = MonsterInGameManager.Instance.Monsters;
+        var data = MonsterInGameManager.Instance.Data;
 
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("<b><color=cyan>===== [Monster Manager Status Report] =====</color></b>");

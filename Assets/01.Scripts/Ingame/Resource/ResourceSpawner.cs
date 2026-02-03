@@ -124,7 +124,7 @@ public class ResourceSpawner : MonoBehaviour
     private bool IsValidPosition(Vector2 pos)
     {
         if (_activeResources.Any(r => r != null && Vector2.Distance(pos, r.transform.position) < _minSpacing)) return false;
-        if (MonsterManager.Instance != null && MonsterManager.Instance.Monsters.Any(m => m != null && Vector2.Distance(pos, m.transform.position) < _minSpacing)) return false;
+        if (MonsterInGameManager.Instance != null && MonsterInGameManager.Instance.Monsters.Any(m => m != null && Vector2.Distance(pos, m.transform.position) < _minSpacing)) return false;
         return true;
     }
 

@@ -18,7 +18,7 @@ public class Monster : MonoBehaviour
     private MonsterAnimator _animator;
     private MonsterMovement _movement;
     private MonsterAttack _attack;
-    private MonsterManager _manager;
+    private MonsterInGameManager _manager;
     private MonsterData.TierInfo _tierInfo;
     private Resource _targetResource;
 
@@ -32,7 +32,7 @@ public class Monster : MonoBehaviour
         _attack = GetComponent<MonsterAttack>();
     }
 
-    public void Initialize(MonsterManager manager, int tier, MonsterData.TierInfo tierInfo)
+    public void Initialize(MonsterInGameManager manager, int tier, MonsterData.TierInfo tierInfo)
     {
         _manager = manager;
         _currentTier = tier;
@@ -59,9 +59,9 @@ public class Monster : MonoBehaviour
         // 머지 중이거나 스폰 중이면 모든 로직 중단
         if (_isMerging || _currentState == State.Spawning) return;
 
-        if (MonsterManager.Instance != null)
+        if (MonsterInGameManager.Instance != null)
         {
-            bool currentlyRegistered = MonsterManager.Instance.Monsters.Contains(this);
+            bool currentlyRegistered = MonsterInGameManager.Instance.Monsters.Contains(this);
             if (_isRegisteredInManager != currentlyRegistered)
             {
                 _isRegisteredInManager = currentlyRegistered;
