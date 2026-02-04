@@ -25,7 +25,7 @@ public class MonsterOutgameManager : MonoBehaviour
         }
         Instance = this;
 
-        _repository = new LocalMonsterRepository(AccountManager.Instance.Email);
+        _repository = new FirebaseMonsterRepository(AccountManager.Instance.Email);
         _collection = new MonsterCollection(_data.Tiers.Length, _data.MaxMonstersPerTier, MonstersRequiredForMerge);
         Load();
     }
@@ -87,22 +87,15 @@ public class MonsterOutgameManager : MonoBehaviour
         return true;
     }
 
-    public void NotifyMonsterRemoved(int tier)
-    {
-        _collection.RemoveMonster(tier);
-        Save();
-        OnDataChanged?.Invoke();
-    }
-
     private void Save()
     {
         if (_data == null) return;
-        _repository.Save(_collection.ToSaveData());
+        _repository.Save(_collection.ToSaveData()).Forget();
     }
 
-    private void Load()
+    private async void Load()
     {
-        var saveData = _repository.Load();
+        var saveData = await _repository.Load();
         _collection.LoadFrom(saveData);
         OnDataChanged?.Invoke();
     }

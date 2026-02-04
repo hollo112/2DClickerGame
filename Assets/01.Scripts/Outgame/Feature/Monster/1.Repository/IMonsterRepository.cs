@@ -1,5 +1,7 @@
+using Cysharp.Threading.Tasks;
+
 public interface IMonsterRepository
 {
-    public void Save(MonsterSaveData saveData);
-    public MonsterSaveData Load();
+    public UniTaskVoid Save(MonsterSaveData saveData);
+    public UniTask<MonsterSaveData> Load();
 }

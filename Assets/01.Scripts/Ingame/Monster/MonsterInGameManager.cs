@@ -27,17 +27,26 @@ public class MonsterInGameManager : MonoBehaviour
         Instance = this;
     }
 
+    private bool _isLoaded = false;
+
     private void Start()
     {
         _currentToolLevel = UpgradeManager.Instance?.Get(EUpgradeType.ToolLevel)?.Level ?? 0;
         UpgradeManager.OnDataChanged += OnUpgradeChanged;
-
-        LoadMonsters();
+        MonsterOutgameManager.OnDataChanged += OnOutgameDataChanged;
     }
 
     private void OnDestroy()
     {
         UpgradeManager.OnDataChanged -= OnUpgradeChanged;
+        MonsterOutgameManager.OnDataChanged -= OnOutgameDataChanged;
+    }
+
+    private void OnOutgameDataChanged()
+    {
+        if (_isLoaded) return;
+        _isLoaded = true;
+        LoadMonsters();
     }
 
     private void OnUpgradeChanged()

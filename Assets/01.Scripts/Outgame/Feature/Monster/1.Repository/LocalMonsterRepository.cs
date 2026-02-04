@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class LocalMonsterRepository : IMonsterRepository
@@ -11,7 +12,7 @@ public class LocalMonsterRepository : IMonsterRepository
         _userId = userId;
     }
 
-    public void Save(MonsterSaveData saveData)
+    public async UniTaskVoid Save(MonsterSaveData saveData)
     {
         PlayerPrefs.SetInt(_userId + TierCountKey, saveData.TierCounts.Length);
         for (int i = 0; i < saveData.TierCounts.Length; i++)
@@ -21,7 +22,7 @@ public class LocalMonsterRepository : IMonsterRepository
         PlayerPrefs.Save();
     }
 
-    public MonsterSaveData Load()
+    public async UniTask<MonsterSaveData> Load()
     {
         int tierCount = PlayerPrefs.GetInt(_userId + TierCountKey, 0);
         if (tierCount <= 0) return MonsterSaveData.Empty;
