@@ -1,6 +1,13 @@
+using System;
+using Firebase.Firestore;
+using UnityEngine;
+
+[Serializable]
+[FirestoreData]
 public class CurrencySaveData
 {
-    public double[] Currencies;
+    [FirestoreProperty]
+    public double[] Currencies {get; set;}
 
     public static CurrencySaveData Default => new CurrencySaveData
     {

@@ -23,7 +23,9 @@ public class CurrencyManager : MonoBehaviour
         Instance = this;
 
         _currency[(int)ECurrencyType.Gold] = new Currency(_startingMoney);
-        _repository = new LocalCurrencyRepository(AccountManager.Instance.Email);
+        
+        //_repository = new LocalCurrencyRepository(AccountManager.Instance.Email);
+        _repository = new FirebaseCurrencyRepository(AccountManager.Instance.Email);
     }
 
     private void Start()
@@ -79,12 +81,12 @@ public class CurrencyManager : MonoBehaviour
         {
             saveData.Currencies[i] = _currency[i].Value;
         }
-        _repository.Save(saveData);
+        _repository.Save(saveData).Forget();
     }
 
-    private void Load()
+    private async void Load()
     {
-        var saveData = _repository.Load();
+        var saveData = await _repository.Load();
         for (int i = 0; i < (int)ECurrencyType.Count; i++)
         {
             if (saveData.Currencies[i] > 0)
