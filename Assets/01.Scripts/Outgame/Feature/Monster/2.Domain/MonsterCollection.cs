@@ -53,24 +53,21 @@ public class MonsterCollection
 
     public bool CanMerge() => FindMergeableTier() >= 0;
 
-    public MonsterSaveData ToSaveData()
+    public int[] GetAllTierCounts()
     {
-        var data = new MonsterSaveData
-        {
-            TierCounts = new int[_totalTiers]
-        };
-        Array.Copy(_tierCounts, data.TierCounts, _totalTiers);
-        return data;
+        var copy = new int[_totalTiers];
+        Array.Copy(_tierCounts, copy, _totalTiers);
+        return copy;
     }
 
-    public void LoadFrom(MonsterSaveData data)
+    public void SetTierCounts(int[] tierCounts)
     {
-        if (data?.TierCounts == null || data.TierCounts.Length == 0) return;
+        if (tierCounts == null || tierCounts.Length == 0) return;
 
-        int count = Math.Min(data.TierCounts.Length, _totalTiers);
+        int count = Math.Min(tierCounts.Length, _totalTiers);
         for (int i = 0; i < count; i++)
         {
-            _tierCounts[i] = data.TierCounts[i];
+            _tierCounts[i] = tierCounts[i];
         }
     }
 }

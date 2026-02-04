@@ -90,13 +90,17 @@ public class MonsterOutgameManager : MonoBehaviour
     private void Save()
     {
         if (_data == null) return;
-        _repository.Save(_collection.ToSaveData()).Forget();
+        var saveData = new MonsterSaveData
+        {
+            TierCounts = _collection.GetAllTierCounts()
+        };
+        _repository.Save(saveData).Forget();
     }
 
     private async void Load()
     {
         var saveData = await _repository.Load();
-        _collection.LoadFrom(saveData);
+        _collection.SetTierCounts(saveData.TierCounts);
         OnDataChanged?.Invoke();
     }
 }
