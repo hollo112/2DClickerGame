@@ -39,18 +39,25 @@ public class FirebaseTutorial : MonoBehaviour
     
     private async UniTask InitFirebase()
     {
-        var result = await FirebaseApp.CheckAndFixDependenciesAsync();
-        
-        if (result == DependencyStatus.Available)
+        var result = await FirebaseApp.CheckAndFixDependenciesAsync().AsUniTask();
+
+        try
         {
-            _app = FirebaseApp.DefaultInstance;         // 파이어베이스 앱   모듈 가져오기
-            _auth = FirebaseAuth.DefaultInstance;       // 파이어베이스 인증 모듈 가져오기
-            _db = FirebaseFirestore.DefaultInstance;    // 파이어베이스 DB  모듈 가져오기
-            Debug.Log("[Firebase Tutorial]: Started");
+            if (result == DependencyStatus.Available)
+            {
+                _app = FirebaseApp.DefaultInstance; // 파이어베이스 앱   모듈 가져오기
+                _auth = FirebaseAuth.DefaultInstance; // 파이어베이스 인증 모듈 가져오기
+                _db = FirebaseFirestore.DefaultInstance; // 파이어베이스 DB  모듈 가져오기
+                Debug.Log("[Firebase Tutorial]: Started");
+            }
         }
-        else
+        catch (FirebaseException e)
         {
-            throw new Exception($"Firebase 초기화 실패: {result}");
+            Debug.LogError($"Firebase 초기화 실패: {result}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"실패: {result}");
         }
     }
 
@@ -58,7 +65,7 @@ public class FirebaseTutorial : MonoBehaviour
     {
         try
         {
-            var result = await _auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            var result = await _auth.CreateUserWithEmailAndPasswordAsync(email, password).AsUniTask();
             Debug.LogFormat("Firebase user created successfully: {0} ({1})", 
                 result.User.DisplayName, result.User.UserId);
         }
@@ -73,7 +80,7 @@ public class FirebaseTutorial : MonoBehaviour
     {
         try
         {
-            var result = await _auth.SignInWithEmailAndPasswordAsync(email, password);
+            var result = await _auth.SignInWithEmailAndPasswordAsync(email, password).AsUniTask();
             Debug.LogFormat("로그인 성공: {0} ({1})", result.User.Email, result.User.UserId);
         }
         catch (Exception e)
@@ -112,7 +119,7 @@ public class FirebaseTutorial : MonoBehaviour
         try
         {
             Dog dog = new Dog("까미", 5);
-            await _db.Collection("Dogs").Document("yj@naver.com").SetAsync(dog);
+            await _db.Collection("Dogs").Document("yj@naver.com").SetAsync(dog).AsUniTask();
             Debug.Log("강아지 저장 완료!");
         }
         catch (Exception e)
@@ -126,7 +133,7 @@ public class FirebaseTutorial : MonoBehaviour
     {
         try
         {
-            var snapshot = await _db.Collection("Dogs").Document("yj@naver.com").GetSnapshotAsync();
+            var snapshot = await _db.Collection("Dogs").Document("yj@naver.com").GetSnapshotAsync().AsUniTask();
             
             if (snapshot.Exists)
             {
@@ -151,7 +158,7 @@ public class FirebaseTutorial : MonoBehaviour
         {
             var querySnapshot = await _db.Collection("Dogs")
                 .WhereEqualTo("Name", "까미")
-                .GetSnapshotAsync();
+                .GetSnapshotAsync().AsUniTask();
 
             foreach (DocumentSnapshot doc in querySnapshot.Documents)
             {

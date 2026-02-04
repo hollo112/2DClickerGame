@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 
@@ -19,12 +20,12 @@ public class AccountManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
-        _repository = new LocalAccountRepository();
+        DontDestroyOnLoad(gameObject);
+        _repository = new FirebaseAccountRepository();
     }
 
 
-    public AuthResult TryLogin(string email, string password)
+    public async UniTask<AccountResult> TryLogin(string email, string password)
     {
         // 1.유효성 검사
         try
@@ -33,7 +34,7 @@ public class AccountManager : MonoBehaviour
         }
         catch(Exception ex)
         {
-            return new AuthResult
+            return new AccountResult
             {
                 Success = false,
                 ErrorMessage = ex.Message,
@@ -41,11 +42,11 @@ public class AccountManager : MonoBehaviour
         }
 
         // 2. 레포지토리를 이용한 로그인
-        AuthResult result = _repository.Login(email, password);
+        AccountResult result = await _repository.Login(email, password);
         if (result.Success)
         {
             _currentAccount = result.Account;
-            return new AuthResult
+            return new AccountResult
             {
                 Success = true,
                 Account = _currentAccount,
@@ -53,7 +54,7 @@ public class AccountManager : MonoBehaviour
         }
         else
         {
-            return new AuthResult
+            return new AccountResult
             {
                 Success = false,
                 ErrorMessage = result.ErrorMessage,
@@ -61,7 +62,7 @@ public class AccountManager : MonoBehaviour
         }
     }
 
-    public AuthResult TryRegister(string email, string password)
+    public async UniTask<AccountResult> TryRegister(string email, string password)
     {
         // 유효성 검사
         try
@@ -70,24 +71,24 @@ public class AccountManager : MonoBehaviour
         }
         catch(Exception ex)
         {
-            return new AuthResult
+            return new AccountResult
             {
                 Success = false,
                 ErrorMessage = ex.Message,
             };
         }
         
-        AuthResult result = _repository.Register(email, password);
+        AccountResult result = await _repository.Register(email, password);
         if (result.Success)
         {
-            return new AuthResult
+            return new AccountResult
             {
                 Success = true,
             };
         }
         else
         {
-            return new AuthResult()
+            return new AccountResult()
             {
                 Success = false,
                 ErrorMessage = result.ErrorMessage,

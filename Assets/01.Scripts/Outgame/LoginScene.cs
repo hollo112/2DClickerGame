@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,9 +38,9 @@ public class LoginScene : MonoBehaviour
     private void AddButtonEvents()
     {
         _gotoRegisterButton.onClick.AddListener(GotoRegister);
-        _loginButton.onClick.AddListener(Login);
+        _loginButton.onClick.AddListener(() => Login().Forget());
         _gotoLoginButton.onClick.AddListener(GotoLogin);
-        _registerButton.onClick.AddListener(Register);
+        _registerButton.onClick.AddListener(() => Register().Forget());
     }
 
     private void Refresh()
@@ -66,13 +67,13 @@ public class LoginScene : MonoBehaviour
         _loginButton.enabled = true;
     }
     
-    private void Login()
+    private async UniTask Login()
     {
         // 로그인
         string email = _idInputField.text;
         string password = _passwordInputField.text;
-        
-        var result = AccountManager.Instance.TryLogin(email, password);
+
+        var result = await AccountManager.Instance.TryLogin(email, password);
         if (result.Success)
         {
             SceneManager.LoadScene("GameScene");
@@ -83,19 +84,19 @@ public class LoginScene : MonoBehaviour
         }
     }
 
-    private void Register()
+    private async UniTask Register()
     {
         string email = _idInputField.text;
         string password = _passwordInputField.text;
-        string password2 = _passwordInputField.text;
-        
+        string password2 = _passwordConfirmInputField.text;
+
         if (string.IsNullOrEmpty(password2) || password != password2)
         {
             _messageTextUI.text = "패스워드를 확인해주세요.";
             return;
         }
 
-        var result = AccountManager.Instance.TryRegister(email, password);
+        var result = await AccountManager.Instance.TryRegister(email, password);
         if (result.Success)
         {
             GotoLogin();

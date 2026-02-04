@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class LocalAccountRepository : IAccountRepository
@@ -16,16 +17,16 @@ public class LocalAccountRepository : IAccountRepository
         return true;
     }
 
-    public AuthResult Register(string email, string password)
+    public UniTask<AccountResult> Register(string email, string password)
     {
         // 1. 이메일 중복검사
         if (!IsEmailAvailable(email))
         {
-            return new AuthResult
+            return UniTask.FromResult(new AccountResult
             {
                 Success = false,
                 ErrorMessage = "중복된 계정입니다.",
-            };
+            });
         }
         
         string hashedPassword = Crypto.HashPassword(password, SALT);
@@ -35,41 +36,41 @@ public class LocalAccountRepository : IAccountRepository
         
         PlayerPrefs.SetString(email, hashedPassword);
         
-        return new AuthResult()
+        return UniTask.FromResult(new AccountResult()
         {
             Success = true,
             Account = new Account(email, password),
-        };
+        });
     }
 
-    public AuthResult Login(string email, string password)
+    public UniTask<AccountResult> Login(string email, string password)
     {
         // 2. 가입한적 없다면 실패!
         if (!PlayerPrefs.HasKey(email))
         {
-            return new AuthResult
+            return UniTask.FromResult(new AccountResult
             {
                 Success = false,
                 ErrorMessage = "아이디와 비밀번호를 확인해주세요.",
-            };
+            });
         }
         
         // 3. 비밀번호 틀렸다면 실패.
         string myPassword = PlayerPrefs.GetString(email);
         if (!Crypto.VerifyPassword(password, myPassword, SALT))
         {
-            return new AuthResult
+            return UniTask.FromResult(new AccountResult
             {
                 Success = false,
                 ErrorMessage = "아이디와 비밀번호를 확인해주세요.",
-            };
+            });
         }
 
-        return new AuthResult()
+        return UniTask.FromResult(new AccountResult()
         {
             Success = true,
             Account = new Account(email, password),
-        };
+        });
     }
 
     public void Logout()
