@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour
@@ -22,7 +23,7 @@ public class UpgradeManager : MonoBehaviour
         }
         Instance = this;
 
-        _repository = new LocalUpgradeRepository(AccountManager.Instance.Email);
+        _repository = new FirebaseUpgradeRepository(AccountManager.Instance.Email);
         InitializeUpgrades();
     }
 
@@ -91,12 +92,12 @@ public class UpgradeManager : MonoBehaviour
             var upgrade = Get(type);
             saveData.Levels[i] = upgrade?.Level ?? 0;
         }
-        _repository.Save(saveData);
+        _repository.Save(saveData).Forget();
     }
 
-    private void Load()
+    private async void Load()
     {
-        var saveData = _repository.Load();
+        var saveData = await _repository.Load();
         for (int i = 0; i < (int)EUpgradeType.Count; i++)
         {
             if (saveData.Levels[i] > 0)

@@ -1,6 +1,12 @@
+using System;
+using Firebase.Firestore;   
+
+[Serializable]
+[FirestoreData]
 public class UpgradeSaveData
 {
-    public int[] Levels;
+    [FirestoreProperty]
+    public int[] Levels {get; set;}
 
     public static UpgradeSaveData Default => new UpgradeSaveData
     {

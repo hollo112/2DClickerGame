@@ -1,6 +1,5 @@
 using System;
 using Firebase.Firestore;
-using UnityEngine;
 
 [Serializable]
 [FirestoreData]

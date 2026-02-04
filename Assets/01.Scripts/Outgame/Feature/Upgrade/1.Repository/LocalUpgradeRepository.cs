@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class LocalUpgradeRepository : IUpgradeRepository
@@ -10,7 +11,7 @@ public class LocalUpgradeRepository : IUpgradeRepository
         _userId = userId;
     }
 
-    public void Save(UpgradeSaveData saveData)
+    public async UniTaskVoid Save(UpgradeSaveData saveData)
     {
         for (int i = 0; i < (int)EUpgradeType.Count; i++)
         {
@@ -20,7 +21,7 @@ public class LocalUpgradeRepository : IUpgradeRepository
         PlayerPrefs.Save();
     }
 
-    public UpgradeSaveData Load()
+    public async UniTask<UpgradeSaveData> Load()
     {
         var data = new UpgradeSaveData
         {

@@ -1,5 +1,7 @@
+using Cysharp.Threading.Tasks;
+
 public interface IUpgradeRepository
 {
-    public void Save(UpgradeSaveData saveData);
-    public UpgradeSaveData Load();
+    public UniTaskVoid Save(UpgradeSaveData saveData);
+    public UniTask<UpgradeSaveData> Load();
 }
