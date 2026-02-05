@@ -44,8 +44,8 @@ public class Monster : MonoBehaviour
         _animator.Initialize(transform.localScale);
         _animator.OnSpawnComplete += () => ChangeState(State.Idle);
         _animator.OnMergeComplete += () => Destroy(gameObject);
-        
-        _movement.Initialize(manager.Data.MoveSpeed);
+
+        _movement.Initialize(manager.Spec.MoveSpeed);
         _attack.Initialize(tierInfo.AttackDamage, tierInfo.AttackInterval, tierInfo.AttackRange);
         _attack.OnAttackPerformed += OnAttackPerformed;
 

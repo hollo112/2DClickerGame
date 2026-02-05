@@ -50,6 +50,7 @@ public class MonsterSpawnButton : UpgradeButtonBase
     protected override bool TryUpgrade()
     {
         if (MonsterInGameManager.Instance == null) return false;
+        
         return MonsterInGameManager.Instance.TrySpawnMonster();
     }
 

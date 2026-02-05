@@ -11,8 +11,10 @@ public class MonsterInGameManager : MonoBehaviour
     [SerializeField] private MonsterData _data;
     [SerializeField] private ResourceSpawner _resourceSpawner;
 
+    private MonsterSpec _spec;
     private List<Monster> _monsters = new List<Monster>();
-    public MonsterData Data => _data;
+
+    public MonsterSpec Spec => _spec;
     public IReadOnlyList<Monster> Monsters => _monsters;
 
     public event Action OnMonsterChanged;
@@ -25,6 +27,8 @@ public class MonsterInGameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+
+        _spec = new MonsterSpec(_data);
     }
 
     private bool _isLoaded = false;
@@ -92,9 +96,9 @@ public class MonsterInGameManager : MonoBehaviour
     #region Load
     private void LoadMonsters()
     {
-        if (MonsterOutgameManager.Instance == null || _data == null) return;
+        if (MonsterOutgameManager.Instance == null || _spec == null) return;
 
-        for (int tier = 0; tier < _data.Tiers.Length; tier++)
+        for (int tier = 0; tier < _spec.TierCount; tier++)
         {
             int count = MonsterOutgameManager.Instance.GetTierCount(tier);
             for (int i = 0; i < count; i++)
@@ -112,7 +116,9 @@ public class MonsterInGameManager : MonoBehaviour
     #region Monster Management
     private bool CreateMonster(int tier, Vector2 position)
     {
-        GameObject obj = Instantiate(_data.MonsterPrefab, position, Quaternion.identity, transform);
+        if (!_spec.IsValidTier(tier)) return false;
+
+        GameObject obj = Instantiate(_spec.MonsterPrefab, position, Quaternion.identity, transform);
         if (obj.TryGetComponent(out Monster monster))
         {
             if (!_monsters.Contains(monster))
@@ -120,7 +126,8 @@ public class MonsterInGameManager : MonoBehaviour
                 _monsters.Add(monster);
             }
 
-            monster.Initialize(this, tier, _data.Tiers[tier]);
+            var tierInfo = _spec.GetTierInfo(tier);
+            monster.Initialize(this, tier, tierInfo);
             OnMonsterChanged?.Invoke();
             return true;
         }
@@ -145,7 +152,7 @@ public class MonsterInGameManager : MonoBehaviour
 
     private bool IsValidPosition(Vector2 pos)
     {
-        float spacing = _data.MinSpacing;
+        float spacing = _spec.MinSpacing;
         if (_monsters.Any(m => m != null && Vector2.Distance(pos, m.transform.position) < spacing)) return false;
         if (_resourceSpawner.ActiveResources.Any(r => r != null && Vector2.Distance(pos, r.transform.position) < spacing)) return false;
         return true;

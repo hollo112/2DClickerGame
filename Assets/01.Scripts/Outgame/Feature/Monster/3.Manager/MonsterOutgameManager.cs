@@ -8,13 +8,18 @@ public class MonsterOutgameManager : MonoBehaviour
 
     [SerializeField] private MonsterData _data;
 
+    private MonsterSpec _spec;
     private MonsterCollection _collection;
     private IMonsterRepository _repository;
 
     private const int MonstersRequiredForMerge = 3;
 
-    public MonsterData Data => _data;
-    public double SpawnCost => _data != null ? _data.SpawnCost : double.MaxValue;
+    public MonsterSpec Spec => _spec;
+
+    /// <summary>
+    /// 스폰 비용 (유효성 보장됨)
+    /// </summary>
+    public double SpawnCost => _spec?.SpawnCost ?? double.MaxValue;
 
     private void Awake()
     {
@@ -25,47 +30,56 @@ public class MonsterOutgameManager : MonoBehaviour
         }
         Instance = this;
 
+        // MonsterSpec 생성 (유효성 검사 포함)
+        _spec = new MonsterSpec(_data);
+
         _repository = new FirebaseMonsterRepository(AccountManager.Instance.Email);
-        _collection = new MonsterCollection(_data.Tiers.Length, _data.MaxMonstersPerTier, MonstersRequiredForMerge);
+        _collection = new MonsterCollection(_spec.TierCount, _spec.MaxMonstersPerTier, MonstersRequiredForMerge);
         Load();
     }
 
+    /// <summary>
+    /// 티어별 머지 비용을 반환합니다 (유효성 보장됨)
+    /// </summary>
     public double GetMergeCost(int tier)
     {
-        if (_data.MergeCosts == null || tier < 0 || tier >= _data.MergeCosts.Length)
-            return double.MaxValue;
-        return _data.MergeCosts[tier];
+        return _spec.GetMergeCost(tier);
     }
 
+    /// <summary>
+    /// 머지 가능한 티어를 찾습니다
+    /// </summary>
     public int GetMergeableTier() => _collection.FindMergeableTier();
 
     public int GetTierCount(int tier) => _collection.GetTierCount(tier);
 
     public bool CanSpawn()
     {
-        return _data != null
+        return _spec.CanSpawn()
             && _collection.CanAddMonster(0)
-            && CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, _data.SpawnCost);
+            && CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, _spec.SpawnCost);
     }
 
     public bool TrySpawn()
     {
         if (!CanSpawn()) return false;
 
-        CurrencyManager.Instance.Spend(ECurrencyType.Gold, _data.SpawnCost);
+        CurrencyManager.Instance.Spend(ECurrencyType.Gold, _spec.SpawnCost);
         _collection.AddMonster(0);
         Save();
         OnDataChanged?.Invoke();
         return true;
     }
 
-
     public bool CanMerge()
     {
-        if (_data == null) return false;
+        if (!_spec.CanSpawn()) return false;
+
         int tier = _collection.FindMergeableTier();
         if (tier < 0) return false;
-        return CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, GetMergeCost(tier));
+
+        return _spec.CanMerge(tier)
+            && CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, _spec.GetMergeCost(tier));
     }
 
     public bool TryMerge(out int sourceTier)
@@ -73,7 +87,9 @@ public class MonsterOutgameManager : MonoBehaviour
         sourceTier = _collection.FindMergeableTier();
         if (sourceTier < 0) return false;
 
-        double cost = GetMergeCost(sourceTier);
+        if (!_spec.CanMerge(sourceTier)) return false;
+
+        double cost = _spec.GetMergeCost(sourceTier);
         if (!CurrencyManager.Instance.CanAfford(ECurrencyType.Gold, cost)) return false;
 
         CurrencyManager.Instance.Spend(ECurrencyType.Gold, cost);
@@ -89,7 +105,6 @@ public class MonsterOutgameManager : MonoBehaviour
 
     private void Save()
     {
-        if (_data == null) return;
         var saveData = new MonsterSaveData
         {
             TierCounts = _collection.GetAllTierCounts()
