@@ -1,16 +1,16 @@
 using System;
 using Firebase.Firestore;
-using UnityEngine;
 
 [Serializable]
 [FirestoreData]
-public class CurrencySaveData
+public class CurrencySaveData : SaveDataBase
 {
     [FirestoreProperty]
-    public double[] Currencies {get; set;}
+    public double[] Currencies { get; set; }
 
     public static CurrencySaveData Default => new CurrencySaveData
     {
-        Currencies = new double[(int)ECurrencyType.Count]
+        Currencies = new double[(int)ECurrencyType.Count],
+        Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
     };
 }

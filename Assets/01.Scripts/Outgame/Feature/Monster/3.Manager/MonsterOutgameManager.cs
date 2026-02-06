@@ -16,9 +16,7 @@ public class MonsterOutgameManager : MonoBehaviour
 
     public MonsterSpec Spec => _spec;
 
-    /// <summary>
     /// 스폰 비용 (유효성 보장됨)
-    /// </summary>
     public double SpawnCost => _spec?.SpawnCost ?? double.MaxValue;
 
     private void Awake()
@@ -33,22 +31,19 @@ public class MonsterOutgameManager : MonoBehaviour
         // MonsterSpec 생성 (유효성 검사 포함)
         _spec = new MonsterSpec(_data);
 
-        _repository = new FirebaseMonsterRepository(AccountManager.Instance.Email);
+        // HybridRepository 사용: 로컬 + Firebase 동기화
+        _repository = new HybridMonsterRepository(AccountManager.Instance.Email);
         _collection = new MonsterCollection(_spec.TierCount, _spec.MaxMonstersPerTier, MonstersRequiredForMerge);
         Load();
     }
 
-    /// <summary>
     /// 티어별 머지 비용을 반환합니다 (유효성 보장됨)
-    /// </summary>
     public double GetMergeCost(int tier)
     {
         return _spec.GetMergeCost(tier);
     }
 
-    /// <summary>
     /// 머지 가능한 티어를 찾습니다
-    /// </summary>
     public int GetMergeableTier() => _collection.FindMergeableTier();
 
     public int GetTierCount(int tier) => _collection.GetTierCount(tier);
@@ -103,13 +98,13 @@ public class MonsterOutgameManager : MonoBehaviour
         return true;
     }
 
-    private void Save()
+    private async void Save()
     {
         var saveData = new MonsterSaveData
         {
             TierCounts = _collection.GetAllTierCounts()
         };
-        _repository.Save(saveData).Forget();
+        await _repository.Save(saveData);
     }
 
     private async void Load()

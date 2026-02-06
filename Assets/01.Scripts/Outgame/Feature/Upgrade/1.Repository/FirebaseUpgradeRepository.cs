@@ -18,10 +18,12 @@ public class FirebaseUpgradeRepository : IUpgradeRepository
         return _db.Collection("users").Document(_userId).Collection("upgrade").Document("data");
     }
 
-    public async UniTaskVoid Save(UpgradeSaveData saveData)
+    public async UniTask Save(UpgradeSaveData saveData)
     {
         try
         {
+            // 타임스탬프 업데이트
+            saveData.UpdateTimestamp();
             await GetDocument().SetAsync(saveData).AsUniTask();
         }
         catch (Exception e)

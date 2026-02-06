@@ -1,15 +1,16 @@
 using System;
-using Firebase.Firestore;   
+using Firebase.Firestore;
 
 [Serializable]
 [FirestoreData]
-public class UpgradeSaveData
+public class UpgradeSaveData : SaveDataBase
 {
     [FirestoreProperty]
-    public int[] Levels {get; set;}
+    public int[] Levels { get; set; }
 
     public static UpgradeSaveData Default => new UpgradeSaveData
     {
-        Levels = new int[(int)EUpgradeType.Count]
+        Levels = new int[(int)EUpgradeType.Count],
+        Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
     };
 }

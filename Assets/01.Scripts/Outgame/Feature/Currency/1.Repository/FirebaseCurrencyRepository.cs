@@ -18,10 +18,12 @@ public class FirebaseCurrencyRepository : ICurrencyRepository
         return _db.Collection("users").Document(_userId).Collection("currency").Document("data");
     }
 
-    public async UniTaskVoid Save(CurrencySaveData currencySaveData)
+    public async UniTask Save(CurrencySaveData currencySaveData)
     {
         try
         {
+            // 타임스탬프 업데이트
+            currencySaveData.UpdateTimestamp();
             await GetDocument().SetAsync(currencySaveData).AsUniTask();
         }
         catch (Exception e)

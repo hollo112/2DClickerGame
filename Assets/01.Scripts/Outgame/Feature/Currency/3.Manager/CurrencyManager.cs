@@ -23,9 +23,9 @@ public class CurrencyManager : MonoBehaviour
         Instance = this;
 
         _currency[(int)ECurrencyType.Gold] = new Currency(_startingMoney);
-        
-        //_repository = new LocalCurrencyRepository(AccountManager.Instance.Email);
-        _repository = new FirebaseCurrencyRepository(AccountManager.Instance.Email);    
+
+        // HybridRepository 사용: 로컬 + Firebase 동기화
+        _repository = new HybridCurrencyRepository(AccountManager.Instance.Email);    
     }
 
     private void Start()
@@ -48,7 +48,6 @@ public class CurrencyManager : MonoBehaviour
 
         OnCurrencyChanged?.Invoke(type, _currency[(int)type]);
 
-        Debug.Log($"[Currency] {type} +{amount} | 현재: {_currency[(int)type]}");
     }
 
     public bool Spend(ECurrencyType type, Currency amount)
@@ -62,7 +61,6 @@ public class CurrencyManager : MonoBehaviour
 
         OnCurrencyChanged?.Invoke(type, _currency[(int)type]);
 
-        Debug.Log($"[Currency] {type} -{amount} | 현재: {_currency[(int)type]}");
         return true;
     }
 
@@ -71,7 +69,7 @@ public class CurrencyManager : MonoBehaviour
         return _currency[(int)type] >= amount;
     }
 
-    private void Save()
+    private async void Save()
     {
         var saveData = new CurrencySaveData
         {
@@ -81,7 +79,7 @@ public class CurrencyManager : MonoBehaviour
         {
             saveData.Currencies[i] = _currency[i].Value;
         }
-        _repository.Save(saveData).Forget();
+        await _repository.Save(saveData);
     }
 
     private async void Load()

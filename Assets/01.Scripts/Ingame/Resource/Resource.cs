@@ -103,8 +103,6 @@ public class Resource : MonoBehaviour, IClickable
     {
         _currentHp -= damage;
 
-        Debug.Log($"[{_name}] HP: {_currentHp}/{_maxHp}");
-
         if (_currentHp <= 0)
         {
             Despawn(notifySpawner: true);

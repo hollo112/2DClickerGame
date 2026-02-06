@@ -23,7 +23,8 @@ public class UpgradeManager : MonoBehaviour
         }
         Instance = this;
 
-        _repository = new FirebaseUpgradeRepository(AccountManager.Instance.Email);
+        // HybridRepository 사용: 로컬 + Firebase 동기화
+        _repository = new HybridUpgradeRepository(AccountManager.Instance.Email);
         InitializeUpgrades();
     }
 
@@ -80,7 +81,7 @@ public class UpgradeManager : MonoBehaviour
         return true;
     }
 
-    private void Save()
+    private async void Save()
     {
         var saveData = new UpgradeSaveData
         {
@@ -92,7 +93,7 @@ public class UpgradeManager : MonoBehaviour
             var upgrade = Get(type);
             saveData.Levels[i] = upgrade?.Level ?? 0;
         }
-        _repository.Save(saveData).Forget();
+        await _repository.Save(saveData);
     }
 
     private async void Load()

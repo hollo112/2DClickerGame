@@ -3,13 +3,14 @@ using Firebase.Firestore;
 
 [Serializable]
 [FirestoreData]
-public class MonsterSaveData
+public class MonsterSaveData : SaveDataBase
 {
     [FirestoreProperty]
-    public int[] TierCounts {get; set;}
+    public int[] TierCounts { get; set; }
 
     public static MonsterSaveData Empty => new MonsterSaveData
     {
-        TierCounts = Array.Empty<int>()
+        TierCounts = Array.Empty<int>(),
+        Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
     };
 }

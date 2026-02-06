@@ -18,10 +18,12 @@ public class FirebaseMonsterRepository : IMonsterRepository
         return _db.Collection("users").Document(_userId).Collection("monster").Document("data");
     }
 
-    public async UniTaskVoid Save(MonsterSaveData saveData)
+    public async UniTask Save(MonsterSaveData saveData)
     {
         try
         {
+            // 타임스탬프 업데이트
+            saveData.UpdateTimestamp();
             await GetDocument().SetAsync(saveData).AsUniTask();
         }
         catch (Exception e)
