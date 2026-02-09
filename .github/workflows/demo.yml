@@ -73,7 +73,21 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
 
-      # 8. 슬랙 알림 (성공)
+      # 8. Butler 설치 & Itch.io 배포
+      - name: Install Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+
+      - name: Push to Itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          ./butler push build/WebGL/WebGL ${{ secrets.ITCHIO_GAME }}:html5
+
+      # 9. 슬랙 알림 (성공)
       - name: Slack Notification (Success)
         if: success()
         uses: slackapi/slack-github-action@v2.1.1
@@ -89,10 +103,11 @@ jobs:
                   text: |
                     ✅ *${{ github.repository }}* 빌드 & 배포 완료!
                     📝 커밋: ${{ github.event.head_commit.message }}
-                    👤 작성자: ${{ github.actor }}
+                    👤 작성자: ${{ github.actor }} (권용진)
                     🌐 <https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/|플레이하기>
+                    🎮 <https://${{ secrets.ITCHIO_GAME_URL }}|Itch.io에서 플레이>
 
-      # 9. 슬랙 알림 (실패)
+      # 10. 슬랙 알림 (실패)
       - name: Slack Notification (Failure)
         if: failure()
         uses: slackapi/slack-github-action@v2.1.1
