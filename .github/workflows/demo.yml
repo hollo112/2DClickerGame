@@ -1,0 +1,29 @@
+# 이 파일은 작업지시서(workflow)다.
+# - 언제(on) = "main에 push하면..."
+# - 작업(jobs) = 할 일 목록
+#   - Build:
+#       어디서? : 깃허브 서버 컴퓨터에서 (runner)
+#         단계  : 1. 코드 가져와 -> 2. 빌드해
+
+# 1. 작업지시서의 이름
+name: Unity WebGL Build
+
+# 2. 언제 실행할 것인가? (트리거, 이벤트)
+on:
+  push:
+    branches: [main]
+    
+# 3. 무엇을?
+jobs:
+  build:
+    # 3-1 어디서?
+    runs-on: ubuntu-latest
+    
+    # 실행할 단계
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+        
+      - name: 유니티 빌드
+        run: echo "유니티 빌드를 합니다."
+        

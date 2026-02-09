@@ -102,3 +102,6 @@ InitTestScene*.unity*
 .idea/
 *.sln.iml
 .claude/
+
+# Windows reserved name
+nul
