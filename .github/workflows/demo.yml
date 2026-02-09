@@ -3,13 +3,13 @@ name: Unity WebGL Build
 on:
   push:
     branches: [ web-build ]
-    
+
 # GitHub Pages 배포에 필요한 권한
 permissions:
   contents: read
   pages: write
   id-token: write
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,11 +26,11 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-      
+
       # 1. 코드 가져오기
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       # 2. 캐시 (빌드 속도 향상)
       - name: Cache Library
         uses: actions/cache@v4
@@ -40,9 +40,11 @@ jobs:
           restore-keys: |
             Library-WebGL-
             Library-
-      
+
       # 3. Unity 빌드
       - name: Build WebGL
+        id: build
+        continue-on-error: true
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -51,30 +53,35 @@ jobs:
         with:
           targetPlatform: WebGL
           buildProfile: "Assets/Settings/Build Profiles/Web - Desktop - Release.asset"
-      
+
       # 4. 빌드 결과물 업로드
       - name: Upload Build
+        if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: WebGL-Build
           path: build/WebGL
-          
+
       # 5. GitHub Pages 배포 준비
       - name: Setup Pages
+        if: steps.build.outcome == 'success'
         uses: actions/configure-pages@v5
 
       # 6. Pages용 Artifact 업로드
       - name: Upload Pages Artifact
+        if: steps.build.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/WebGL/WebGL
 
       # 7. GitHub Pages 배포
       - name: Deploy to GitHub Pages
+        if: steps.build.outcome == 'success'
         uses: actions/deploy-pages@v4
 
       # 8. Butler 설치 & Itch.io 배포
       - name: Install Butler
+        if: steps.build.outcome == 'success'
         run: |
           curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
           unzip butler.zip
@@ -82,14 +89,48 @@ jobs:
           ./butler -V
 
       - name: Push to Itch.io
+        if: steps.build.outcome == 'success'
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
           ./butler push build/WebGL/WebGL ${{ secrets.ITCHIO_GAME }}:html5
 
-      # 9. 슬랙 알림 (성공)
+      # 9. 빌드 실패 시 Gemini로 에러 분석
+      - name: Analyze Build Error with Gemini
+        id: analyze
+        if: steps.build.outcome == 'failure'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          ERROR_FILE=/tmp/build_errors.txt
+          touch "$ERROR_FILE"
+
+          find "$GITHUB_WORKSPACE" /home /tmp -name "*.log" -type f 2>/dev/null | head -10 | while read -r f; do
+            grep -i -E "error|fatal|exception|failed" "$f" 2>/dev/null | tail -20 >> "$ERROR_FILE"
+          done
+
+          if [ ! -s "$ERROR_FILE" ]; then
+            echo "Build failed but no specific error logs were found." > "$ERROR_FILE"
+          fi
+
+          ERROR_LOG=$(tail -40 "$ERROR_FILE" | head -c 2000)
+
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg prompt "다음 Unity WebGL 빌드 에러 로그를 분석해줘. 한국어로 원인과 해결방법을 3줄 이내로 설명. 마크다운 금지:\n\n${ERROR_LOG}" \
+              '{contents:[{parts:[{text:$prompt}]}]}')" || true)
+
+          ANALYSIS=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "AI 분석을 수행할 수 없습니다."' | head -5)
+
+          {
+            echo "analysis<<ANALYSIS_EOF"
+            echo "$ANALYSIS"
+            echo "ANALYSIS_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # 10. 슬랙 알림 (성공)
       - name: Slack Notification (Success)
-        if: success()
+        if: steps.build.outcome == 'success'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
@@ -103,13 +144,13 @@ jobs:
                   text: |
                     ✅ *${{ github.repository }}* 빌드 & 배포 완료!
                     📝 커밋: ${{ github.event.head_commit.message }}
-                    👤 작성자: ${{ github.actor }} (권용진)
+                    👤 작성자: ${{ github.actor }}
                     🌐 <https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/|플레이하기>
-                    🎮 <https://${{ secrets.ITCHIO_GAME_URL }}|Itch.io에서 플레이>
+                    🎮 <${{ secrets.ITCHIO_GAME_URL }}|Itch.io에서 플레이>
 
-      # 10. 슬랙 알림 (실패)
+      # 11. 슬랙 알림 (실패 + AI 분석)
       - name: Slack Notification (Failure)
-        if: failure()
+        if: steps.build.outcome == 'failure'
         uses: slackapi/slack-github-action@v2.1.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
@@ -125,3 +166,14 @@ jobs:
                     📝 커밋: ${{ github.event.head_commit.message }}
                     👤 작성자: ${{ github.actor }}
                     🔗 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|로그 확인>
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: |
+                    🤖 *Gemini AI 분석:*
+                    ${{ steps.analyze.outputs.analysis }}
+
+      # 12. 빌드 실패 시 Job을 실패 상태로 마킹
+      - name: Fail job if build failed
+        if: steps.build.outcome == 'failure'
+        run: exit 1
