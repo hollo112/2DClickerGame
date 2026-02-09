@@ -105,9 +105,12 @@ jobs:
           ERROR_FILE=/tmp/build_errors.txt
           touch "$ERROR_FILE"
 
-          find "$GITHUB_WORKSPACE" /home /tmp -name "*.log" -type f 2>/dev/null | head -10 | while read -r f; do
+          echo "=== 로그 파일 검색 ==="
+          find "$GITHUB_WORKSPACE" /home /tmp -name "*.log" -type f 2>/dev/null | head -10 | tee /tmp/log_files.txt
+
+          while read -r f; do
             grep -i -E "error|fatal|exception|failed" "$f" 2>/dev/null | tail -20 >> "$ERROR_FILE"
-          done
+          done < /tmp/log_files.txt
 
           if [ ! -s "$ERROR_FILE" ]; then
             echo "Build failed but no specific error logs were found." > "$ERROR_FILE"
@@ -115,10 +118,21 @@ jobs:
 
           ERROR_LOG=$(tail -40 "$ERROR_FILE" | head -c 2000)
 
+          echo "=== 수집된 에러 로그 ==="
+          echo "$ERROR_LOG"
+
+          PROMPT="다음 Unity WebGL 빌드 에러 로그를 분석해줘. 한국어로 원인과 해결방법을 3줄 이내로 설명. 마크다운 금지:\n\n${ERROR_LOG}"
+          REQUEST_BODY=$(jq -n --arg prompt "$PROMPT" '{contents:[{parts:[{text:$prompt}]}]}')
+
+          echo "=== Gemini 요청 본문 ==="
+          echo "$REQUEST_BODY" | jq .
+
           RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}" \
             -H "Content-Type: application/json" \
-            -d "$(jq -n --arg prompt "다음 Unity WebGL 빌드 에러 로그를 분석해줘. 한국어로 원인과 해결방법을 3줄 이내로 설명. 마크다운 금지:\n\n${ERROR_LOG}" \
-              '{contents:[{parts:[{text:$prompt}]}]}')" || true)
+            -d "$REQUEST_BODY" || true)
+
+          echo "=== Gemini 응답 ==="
+          echo "$RESPONSE" | jq .
 
           ANALYSIS=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "AI 분석을 수행할 수 없습니다."' | head -5)
 
