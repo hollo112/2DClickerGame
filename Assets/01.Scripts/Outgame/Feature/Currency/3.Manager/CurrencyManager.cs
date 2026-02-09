@@ -24,8 +24,12 @@ public class CurrencyManager : MonoBehaviour
 
         _currency[(int)ECurrencyType.Gold] = new Currency(_startingMoney);
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+        _repository = new LocalCurrencyRepository(AccountManager.Instance.Email);
+#else
         // HybridRepository 사용: 로컬 + Firebase 동기화
-        _repository = new HybridCurrencyRepository(AccountManager.Instance.Email);    
+        _repository = new HybridCurrencyRepository(AccountManager.Instance.Email);
+#endif
     }
 
     private void Start()
