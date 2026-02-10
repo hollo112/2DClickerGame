@@ -1,3 +1,4 @@
+#if !UNITY_WEBGL || UNITY_EDITOR
 using System;
 using Cysharp.Threading.Tasks;
 using Firebase;
@@ -12,7 +13,7 @@ public class FirebaseInitializer : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        
+
         DontDestroyOnLoad(this);
     }
 
@@ -20,7 +21,7 @@ public class FirebaseInitializer : MonoBehaviour
     {
         InitFirebase().Forget();
     }
-    
+
     private async UniTask InitFirebase()
     {
         var status = await FirebaseApp.CheckAndFixDependenciesAsync().AsUniTask();
@@ -42,3 +43,4 @@ public class FirebaseInitializer : MonoBehaviour
         }
     }
 }
+#endif

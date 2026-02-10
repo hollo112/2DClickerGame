@@ -1,3 +1,4 @@
+#if !UNITY_WEBGL || UNITY_EDITOR
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -73,3 +74,4 @@ public class HybridCurrencyRepository : ICurrencyRepository
         return newer ?? CurrencySaveData.Default;
     }
 }
+#endif

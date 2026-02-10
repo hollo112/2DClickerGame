@@ -23,8 +23,12 @@ public class UpgradeManager : MonoBehaviour
         }
         Instance = this;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+        _repository = new LocalUpgradeRepository(AccountManager.Instance.Email);
+#else
         // HybridRepository 사용: 로컬 + Firebase 동기화
         _repository = new HybridUpgradeRepository(AccountManager.Instance.Email);
+#endif
         InitializeUpgrades();
     }
 

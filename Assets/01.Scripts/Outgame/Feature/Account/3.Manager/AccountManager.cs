@@ -21,7 +21,11 @@ public class AccountManager : MonoBehaviour
     {
         Instance = this;
         DontDestroyOnLoad(gameObject);
+#if UNITY_WEBGL && !UNITY_EDITOR
+        _repository = new LocalAccountRepository();
+#else
         _repository = new FirebaseAccountRepository();
+#endif
     }
 
 

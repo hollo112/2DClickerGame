@@ -31,8 +31,12 @@ public class MonsterOutgameManager : MonoBehaviour
         // MonsterSpec 생성 (유효성 검사 포함)
         _spec = new MonsterSpec(_data);
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+        _repository = new LocalMonsterRepository(AccountManager.Instance.Email);
+#else
         // HybridRepository 사용: 로컬 + Firebase 동기화
         _repository = new HybridMonsterRepository(AccountManager.Instance.Email);
+#endif
         _collection = new MonsterCollection(_spec.TierCount, _spec.MaxMonstersPerTier, MonstersRequiredForMerge);
         Load();
     }

@@ -1,3 +1,4 @@
+#if !UNITY_WEBGL || UNITY_EDITOR
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -74,3 +75,4 @@ public class HybridMonsterRepository : IMonsterRepository
         return newer ?? MonsterSaveData.Empty;
     }
 }
+#endif
