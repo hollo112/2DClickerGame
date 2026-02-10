@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class MonsterOutgameManager : MonoBehaviour
@@ -113,6 +114,7 @@ public class MonsterOutgameManager : MonoBehaviour
 
     private async void Load()
     {
+        await UniTask.Yield();
         var saveData = await _repository.Load();
         _collection.SetTierCounts(saveData.TierCounts);
         OnDataChanged?.Invoke();

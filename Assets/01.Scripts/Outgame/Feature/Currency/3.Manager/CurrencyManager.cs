@@ -1,5 +1,3 @@
-this_is_intentional_build_error_for_gemini_test
-
 using System;
 using UnityEngine;
 
