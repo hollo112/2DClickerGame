@@ -8,6 +8,7 @@ public class UpgradeSpecData
     public double BaseCost;
     public double BaseValue;
     public double CostMultiplier;
+    public double CostExponent = 1;
     public double ValuePerLevel;
     public string Name;
     public string Description;
